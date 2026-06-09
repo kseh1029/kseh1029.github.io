@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LG전자 회의록 PPT 생성기</title>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 36px; }
+    header h1 { font-size: 1.9rem; font-weight: 700; color: #1a2e4a; letter-spacing: -0.5px; }
+    header p { margin-top: 8px; color: #64748b; font-size: 0.93rem; }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      padding: 28px 32px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a2e4a;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .field { margin-bottom: 16px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+    label .req { color: #e53e3e; margin-left: 2px; }
+
+    input[type="text"], input[type="date"], input[type="time"], textarea, select {
+      width: 100%;
+      padding: 9px 13px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.93rem;
+      font-family: inherit;
+      color: #1a2e4a;
+      background: #f8fafc;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus { border-color: #3b82f6; background: #fff; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* API key toggle */
+    .api-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: #64748b;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 10px;
+    }
+    .api-toggle:hover { color: #3b82f6; }
+    #apiKeyWrap { display: none; }
+    #apiKeyWrap.open { display: block; }
+    .api-key-note {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-top: 5px;
+    }
+
+    /* Free text area */
+    #rawContent {
+      min-height: 160px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    /* Classify button */
+    .classify-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      background: linear-gradient(135deg, #6366f1, #3b82f6);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: 0 3px 10px rgba(99,102,241,0.3);
+    }
+    .classify-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .classify-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* Spinner */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Result table */
+    #resultSection { display: none; }
+    #resultSection.show { display: block; }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .result-header span { font-size: 0.82rem; color: #64748b; }
+    .edit-hint {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-bottom: 10px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .result-table th {
+      background: #1a2e4a;
+      color: #fff;
+      padding: 9px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    .result-table th:nth-child(2) { width: 100px; text-align: center; }
+    .result-table th:nth-child(3) { width: 160px; }
+
+    .result-table td {
+      padding: 0;
+      border: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+    .result-table tr:nth-child(even) td { background: #f8fafc; }
+    .result-table tr:nth-child(odd)  td { background: #fff; }
+
+    .result-table td textarea,
+    .result-table td input[type="text"] {
+      border: none;
+      background: transparent;
+      border-radius: 0;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      resize: none;
+      min-height: 60px;
+    }
+    .result-table td input[type="text"] { min-height: unset; height: 100%; padding: 8px 10px; }
+    span.topic-input:empty::before { content: attr(data-placeholder); color:#f87171; font-weight:400; pointer-events:none; }
+    .result-table td select {
+      border: none;
+      background: transparent;
+      border-radius: 0;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      text-align: center;
+      height: 100%;
+      cursor: pointer;
+    }
+    .result-table td.del-cell {
+      width: 36px;
+      text-align: center;
+      vertical-align: middle;
+      padding: 4px;
+    }
+    .del-row-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #cbd5e1;
+      font-size: 1rem;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    .del-row-btn:hover { color: #ef4444; background: #fee2e2; }
+
+    .add-row-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      background: #eff6ff;
+      color: #3b82f6;
+      border: 1.5px dashed #93c5fd;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    .add-row-btn:hover { background: #dbeafe; }
+
+    /* Mode tabs */
+    .mode-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 4px;
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 9px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+      font-family: inherit;
+    }
+    .mode-tab.active {
+      background: #fff;
+      color: #1a2e4a;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    /* Generate button */
+    .generate-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #1a2e4a 0%, #2563eb 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.28);
+    }
+    .generate-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+    .generate-btn:active { transform: translateY(0); }
+    .clear-btn {
+      width: 100%;
+      padding: 11px;
+      background: #fff;
+      color: #94a3b8;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      margin-top: 8px;
+    }
+    .clear-btn:hover { background: #fff1f1; color: #ef4444; border-color: #fca5a5; }
+    .title-chip {
+      display: inline-block;
+      padding: 5px 12px;
+      background: #f0f4ff;
+      color: #3b5bdb;
+      border: 1.5px solid #c5d0fa;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .title-chip:hover { background: #dbe4ff; border-color: #748ffc; }
+    .att-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px 3px 10px;
+      background: #ede9fe;
+      color: #4c1d95;
+      border: 1px solid #c4b5fd;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      white-space: nowrap;
+      cursor: grab;
+    }
+    .att-chip.chip-drop-before { box-shadow: -3px 0 0 #6366f1; }
+    .att-chip.chip-drop-after  { box-shadow:  3px 0 0 #6366f1; }
+    .att-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 4px;
+      border-radius: 6px;
+    }
+    .att-row:hover { background: #f1f5f9; }
+    .att-row-handle {
+      cursor: grab;
+      color: #cbd5e1;
+      font-size: 1rem;
+      padding: 0 2px;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .att-row-handle:active { cursor: grabbing; }
+    .att-row-team {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #3b5bdb;
+      background: #eef2ff;
+      border: 1px solid #c5d0fa;
+      border-radius: 4px;
+      padding: 2px 7px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .att-row.row-drop-above { box-shadow: 0 -2px 0 #6366f1; }
+    .att-row.row-drop-below { box-shadow: 0  2px 0 #6366f1; }
+    .att-chip-x {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #a78bfa;
+      color: #fff;
+      font-size: 0.65rem;
+      cursor: pointer;
+      font-weight: 700;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .att-chip-x:hover { background: #7c3aed; }
+    .fu-wrap { position:relative; display:flex; gap:3px; }
+    .fu-wrap input { flex:1; min-width:0; }
+    .fu-drop-btn { flex-shrink:0; padding:0 5px; background:#f1f5f9; border:1.5px solid #e2e8f0; border-radius:6px; cursor:pointer; font-size:0.7rem; color:#64748b; line-height:1; }
+    .fu-drop-btn:hover { background:#e2e8f0; }
+    .fu-dropdown { position:absolute; top:100%; left:0; right:0; background:#fff; border:1.5px solid #e2e8f0; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); z-index:999; max-height:160px; overflow-y:auto; margin-top:2px; display:none; }
+    .fu-dropdown.open { display:block; }
+    .fu-dropdown-item { padding:7px 12px; font-size:0.83rem; cursor:pointer; color:#1e293b; }
+    .fu-dropdown-item:hover { background:#f0f4ff; color:#3b5bdb; }
+    .drag-handle {
+      cursor: grab;
+      color: #cbd5e1;
+      font-size: 1rem;
+      padding: 0 4px;
+      user-select: none;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .drag-handle:active { cursor: grabbing; }
+    tr.drop-above td { box-shadow: 0 -3px 0 #6366f1; }
+    tr.drop-below td { box-shadow: 0 3px 0 #6366f1; }
+    .title-chip.selected { background: #3b5bdb; color: #fff; border-color: #3b5bdb; }
+
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1a2e4a;
+      color: #fff;
+      padding: 11px 26px;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: transform 0.3s ease;
+      z-index: 999;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* 참석자 북 */
+    .ab-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: #64748b;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 10px;
+    }
+    .ab-toggle:hover { color: #3b82f6; }
+    #abWrap { display: block; }
+
+    .ab-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+    .ab-table th {
+      background: #f1f5f9;
+      color: #374151;
+      padding: 7px 10px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 1.5px solid #e2e8f0;
+    }
+    .ab-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+    .ab-table tr:last-child td { border-bottom: none; }
+    .ab-table .team-badge {
+      display: inline-block;
+      background: #eff6ff;
+      color: #2563eb;
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+    .ab-table .ab-names {
+      color: #374151;
+      font-size: 0.83rem;
+    }
+    .ab-use-btn {
+      padding: 3px 7px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .ab-use-btn:hover { background: #eff6ff; }
+    .ab-del-btn {
+      padding: 3px 8px;
+      background: none;
+      color: #cbd5e1;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+    .ab-del-btn:hover { color: #ef4444; background: #fee2e2; }
+    .ab-use-btn, .ab-edit-btn, .ab-del-btn { line-height: 1; }
+
+    .ab-edit-btn {
+      padding: 3px 7px;
+      background: none;
+      color: #64748b;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .ab-edit-btn:hover { background: #eff6ff; color: #2563eb; }
+
+    .ab-edit-input {
+      width: 100%;
+      padding: 3px 6px;
+      border: 1.5px solid #93c5fd;
+      border-radius: 5px;
+      font-size: 0.83rem;
+      font-family: inherit;
+      background: #fff;
+      outline: none;
+    }
+    .ab-edit-save {
+      padding: 3px 10px;
+      background: #1a2e4a;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-left: 2px;
+    }
+    .ab-edit-cancel {
+      padding: 3px 8px;
+      background: none;
+      color: #94a3b8;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      margin-left: 2px;
+    }
+
+    .ab-add-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .ab-add-row .ab-field { flex: 1; min-width: 100px; }
+    .ab-add-row label { font-size: 0.78rem; color: #64748b; margin-bottom: 4px; display: block; }
+    .ab-add-row input { font-size: 0.85rem; padding: 7px 10px; }
+    .ab-save-btn {
+      padding: 8px 16px;
+      background: #1a2e4a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      align-self: flex-end;
+    }
+    .ab-save-btn:hover { opacity: 0.85; }
+    .ab-empty { color: #94a3b8; font-size: 0.83rem; padding: 10px 0; text-align: center; }
+
+    #abPager {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 8px 0 4px;
+    }
+    #abPager button {
+      padding: 3px 12px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 6px;
+      background: #f8fafc;
+      color: #374151;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    #abPager button:hover:not(:disabled) { background: #e2e8f0; }
+    #abPager button:disabled { opacity: 0.35; cursor: default; }
+    #abPageInfo { font-size: 0.82rem; color: #64748b; min-width: 50px; text-align: center; }
+
+    .ab-file-btn {
+      display: inline-block;
+      padding: 6px 14px;
+      background: #f8fafc;
+      color: #475569;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 7px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+    .ab-file-btn:hover { background: #e2e8f0; }
+    .ab-file-hint {
+      font-size: 0.76rem;
+      color: #94a3b8;
+      margin-top: 6px;
+    }
+    .ab-file-hint code {
+      background: #f1f5f9;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+      color: #475569;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>📋 LG전자 회의록 PPT 생성기</h1>
+  </header>
+
+  <!-- API 키 설정 -->
+  <div class="card">
+    <div class="api-toggle" id="apiToggle">
+      <span>⚙️</span> API 키 설정
+      <span id="apiArrow" style="margin-left:auto;">▼</span>
+    </div>
+    <div id="apiKeyWrap">
+      <div class="field">
+        <label>Google Gemini API Key</label>
+        <input type="password" id="apiKey" placeholder="AIza...">
+        <div class="api-key-note">API 키는 브라우저에만 저장되며 외부로 전송되지 않습니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="clear-btn" id="clearBtn" style="margin-bottom:20px;">🗑 전체 초기화</button>
+
+  <!-- 참석자 북 -->
+  <div class="card">
+    <div class="ab-toggle" id="abToggle">
+      <span>👥</span> 참석자 리스트
+    </div>
+    <div id="abWrap">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
+        <div style="position:relative;flex:1;">
+          <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;pointer-events:none;">🔍</span>
+          <input type="text" id="abSearch" placeholder="팀명 또는 이름으로 검색..."
+            style="width:100%;padding:8px 12px 8px 32px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-family:inherit;outline:none;background:#f8fafc;box-sizing:border-box;">
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:0.83rem;color:#475569;white-space:nowrap;cursor:pointer;">
+          <input type="checkbox" id="abSortToggle" checked style="width:15px;height:15px;cursor:pointer;accent-color:#6366f1;">
+          가나다·직급순 정렬
+        </label>
+      </div>
+      <table class="ab-table" id="abTable">
+        <thead>
+          <tr>
+            <th style="width:32px;text-align:center;">No</th>
+            <th style="width:110px;">팀명</th>
+            <th>참석자</th>
+            <th style="width:44px;text-align:center;">추가</th>
+            <th style="width:44px;text-align:center;">수정</th>
+            <th style="width:44px;text-align:center;">삭제</th>
+          </tr>
+        </thead>
+        <tbody id="abBody"></tbody>
+      </table>
+      <div id="abPager" style="display:none;">
+        <button type="button" id="abPrevBtn">&#8249; 이전</button>
+        <span id="abPageInfo"></span>
+        <button type="button" id="abNextBtn">다음 &#8250;</button>
+      </div>
+      <div class="ab-add-row">
+        <div class="ab-field">
+          <label>팀명</label>
+          <input type="text" id="abTeam" placeholder="예: AI홈솔루션엔지니어링팀">
+        </div>
+        <div class="ab-field" style="flex:3;">
+          <label>참석자</label>
+          <input type="text" id="abNames" placeholder="예: 김승현 선임">
+        </div>
+        <button type="button" class="ab-save-btn" id="abAddBtn">저장</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button type="button" class="ab-file-btn" id="abImportBtn" style="flex:1;">📋 참석자 리스트 불러오기</button>
+        <button type="button" class="ab-file-btn" id="abExportBtn" style="flex:1;">📤 참석자 리스트 내보내기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 기본 정보 -->
+  <div class="card">
+    <div class="card-title">📌 기본 정보</div>
+
+    <div class="field">
+      <label>회의 제목 <span class="req">*</span></label>
+      <input type="text" id="title" placeholder="예: ThinQ ON 미국향 품평회">
+      <div id="titleSuggestions" style="display:none;margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;align-items:end;margin-bottom:16px;">
+      <div class="field" style="margin-bottom:0;">
+        <label>날짜 <span class="req">*</span></label>
+        <div style="position:relative;display:block;">
+          <input type="date" id="date" style="width:100%;padding-right:42px;height:38px;box-sizing:border-box;">
+          <span id="dateWeekday" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:0.88rem;font-weight:700;color:#6366f1;pointer-events:none;"></span>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label>시작 시간</label>
+        <select id="timeStart" style="height:38px;box-sizing:border-box;"></select>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label>회의 시간</label>
+        <select id="timeDuration" style="height:38px;box-sizing:border-box;">
+          <option value="30">30분</option>
+          <option value="60" selected>1시간</option>
+          <option value="90">1시간 30분</option>
+          <option value="120">2시간</option>
+          <option value="150">2시간 30분</option>
+          <option value="180">3시간</option>
+        </select>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label style="visibility:hidden;">현재</label>
+        <button type="button" id="nowBtn" style="height:38px;box-sizing:border-box;width:100%;padding:0 12px;background:#f1f5f9;color:#475569;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;">🕐 현재 시간</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>장소 <span class="req">*</span></label>
+      <input type="text" id="location" placeholder="예: LG사이언스파크 W4동 8층 대회의실">
+    </div>
+
+    <div class="field">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+        <label style="margin-bottom:0;">참석자 <span class="req">*</span></label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:0.83rem;color:#475569;cursor:pointer;font-weight:500;">
+          <input type="checkbox" id="attSortToggle" checked style="width:15px;height:15px;cursor:pointer;accent-color:#6366f1;">
+          가나다·직급순 정렬
+        </label>
+      </div>
+      <input type="hidden" id="attendees">
+      <div id="attendeesChips" style="min-height:38px;padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:8px;background:#f8fafc;display:flex;flex-direction:column;gap:1px;justify-content:center;">
+        <span id="attendeesPlaceholder" style="color:#94a3b8;font-size:0.88rem;padding-left:7px;">참석자 리스트에서 추가해 주세요.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 회의 내용 -->
+  <div class="card">
+    <div class="card-title">✏️ 회의 내용</div>
+
+    <!-- 탭 -->
+    <div class="mode-tabs">
+      <button type="button" class="mode-tab active" id="tabAI">✨ AI 자동 분류</button>
+      <button type="button" class="mode-tab" id="tabManual">📝 직접 입력</button>
+    </div>
+
+    <!-- AI 모드 -->
+    <div id="modeAI">
+      <div class="field">
+        <label>회의 내용을 자유롭게 입력하세요 <span class="req">*</span></label>
+        <textarea id="rawContent" placeholder="예시)
+오늘 회의에서는 ThinQ ON 미국향 품평회를 진행했다.
+개발 수익성과 Pre-MP 생산 계획, 추후 양산승인회 일정에 대해 논의하였다."></textarea>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:4px;">
+        <button type="button" class="classify-btn" id="classifyBtn" style="flex:1;margin-top:0;">
+          ✨ AI로 자동 분류하기
+        </button>
+      </div>
+
+      <!-- AI 분류 결과 (AI 탭 내부) -->
+      <div id="resultSection" style="display:none;margin-top:20px;">
+        <div class="result-header">
+          <span style="font-size:0.85rem;font-weight:700;color:#1a2e4a;">📊 분류 결과</span>
+          <span style="font-size:0.78rem;color:#94a3b8;">셀을 클릭하면 수정할 수 있습니다</span>
+        </div>
+        <table class="result-table" id="resultTable">
+          <colgroup>
+            <col style="width:22px;">
+            <col>
+            <col style="width:34px;">
+            <col style="width:130px;">
+            <col style="width:36px;">
+          </colgroup>
+          <thead>
+            <tr>
+              <th style="width:22px;"></th>
+              <th>주요 논의 사항</th>
+              <th style="text-align:center;width:34px;">유 형</th>
+              <th style="width:130px;">Follow up</th>
+              <th style="width:36px;"></th>
+            </tr>
+          </thead>
+          <tbody id="resultBody"></tbody>
+        </table>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button type="button" class="add-row-btn" id="addTopicResult" style="flex:1;background:#fff0f0;color:#b91c1c;border-color:#fca5a5;">＋ 주제 추가</button>
+          <button type="button" class="add-row-btn" id="addRowResult" style="flex:1;">＋ 내용 추가</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 직접 입력 모드 -->
+    <div id="modeManual" style="display:none;">
+      <table class="result-table" id="manualTable">
+        <colgroup>
+          <col style="width:22px;">
+          <col>
+          <col style="width:34px;">
+          <col style="width:130px;">
+          <col style="width:36px;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th style="width:22px;"></th>
+            <th>주요 논의 사항</th>
+            <th style="text-align:center;width:34px;">유 형</th>
+            <th style="width:130px;">Follow up</th>
+            <th style="width:36px;"></th>
+          </tr>
+        </thead>
+        <tbody id="manualBody"></tbody>
+      </table>
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button type="button" class="add-row-btn" id="addTopicManual" style="flex:1;background:#fff0f0;color:#b91c1c;border-color:#fca5a5;">＋ 주제 추가</button>
+        <button type="button" class="add-row-btn" id="addRowManual" style="flex:1;">＋ 내용 추가</button>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="generate-btn" id="generateBtn">🗂 PPT 파일 생성 및 다운로드</button>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- 참석자 리스트 텍스트 모달 -->
+<div id="abTextModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:28px 24px;width:min(520px,92vw);box-shadow:0 8px 32px rgba(0,0,0,0.18);display:flex;flex-direction:column;gap:14px;">
+    <div style="font-size:1rem;font-weight:700;color:#1e293b;" id="abModalTitle">참석자 리스트</div>
+    <div style="font-size:0.82rem;color:#64748b;" id="abModalDesc"></div>
+    <textarea id="abModalTextarea" rows="12"
+      style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.83rem;font-family:monospace;resize:vertical;outline:none;line-height:1.6;box-sizing:border-box;"></textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <!-- 내보내기 전용 -->
+      <button type="button" id="abModalDownload" style="display:none;padding:8px 18px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;">💾 텍스트 파일 저장</button>
+      <button type="button" id="abModalCopy" style="display:none;padding:8px 18px;background:#f1f5f9;color:#475569;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;">📋 복사하기</button>
+      <!-- 불러오기 전용 -->
+      <input type="file" id="abModalFileInput" accept=".txt" style="display:none;">
+      <button type="button" id="abModalFileBtn" style="display:none;padding:8px 18px;background:#f1f5f9;color:#475569;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;">📂 텍스트 파일 불러오기</button>
+      <button type="button" id="abModalConfirm" style="display:none;padding:8px 18px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;">저장하기</button>
+      <!-- 공통 -->
+      <button type="button" id="abModalClose" style="padding:8px 18px;background:#f1f5f9;color:#475569;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;font-weight:600;cursor:pointer;">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── 유틸 ──
+  const WEEKDAYS = ['일','월','화','수','목','금','토'];
+  const TYPE_OPTIONS = ['지시','보고','협의','결정','공유','요청','해야할 일','Comment','기타'];
+
+  function getWeekday(dateVal) {
+    const d = new Date(dateVal);
+    return isNaN(d.getTime()) ? '' : WEEKDAYS[d.getDay()];
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function $(id) { return document.getElementById(id); }
+
+  // ── 시간 선택 옵션 ──
+  function buildTimeOptions(selectId, defaultVal) {
+    const sel = $(selectId);
+    sel.innerHTML = '';
+    for (let h = 7; h <= 20; h++) {
+      for (let m of [0, 30]) {
+        if (h === 20 && m === 30) continue; // 20:30 제외
+        const val = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.textContent = val;
+        if (val === defaultVal) opt.selected = true;
+        sel.appendChild(opt);
+      }
+    }
+  }
+  buildTimeOptions('timeStart', '09:00');
+
+  // ── 오늘 날짜 세팅 ──
+  function updateWeekdayLabel() {
+    var val = $('date').value;
+    var wd = val ? getWeekday(val) : '';
+    $('dateWeekday').textContent = wd ? '(' + wd + ')' : '';
+  }
+  $('date').addEventListener('change', updateWeekdayLabel);
+
+  $('nowBtn').addEventListener('click', function() {
+    var now = new Date();
+    $('date').value = now.getFullYear() + '-'
+      + String(now.getMonth()+1).padStart(2,'0') + '-'
+      + String(now.getDate()).padStart(2,'0');
+    updateWeekdayLabel();
+    // 30분 단위로 내림
+    var h = now.getHours();
+    var m = now.getMinutes() < 30 ? 0 : 30;
+    var val = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+    // 선택지 범위(07:00~20:00) 안에 있으면 세팅, 아니면 가장 가까운 값으로
+    var opts = Array.from($('timeStart').options).map(function(o){ return o.value; });
+    if (opts.includes(val)) $('timeStart').value = val;
+    else if (h < 7)  $('timeStart').value = '07:00';
+    else             $('timeStart').value = '20:00';
+    saveFormState();
+  });
+
+  const today = new Date();
+  $('date').value = today.getFullYear() + '-'
+    + String(today.getMonth()+1).padStart(2,'0') + '-'
+    + String(today.getDate()).padStart(2,'0');
+  updateWeekdayLabel();
+
+  // ── 참석자 북 ──
+  var AB_KEY = 'meeting_ab_v1';
+  var AB_PAGE_SIZE = 10;
+  var abCurrentPage = 0;
+
+  function abLoad() {
+    try { return JSON.parse(localStorage.getItem(AB_KEY)) || []; }
+    catch(e) { return []; }
+  }
+  function abSave(list) { localStorage.setItem(AB_KEY, JSON.stringify(list)); }
+
+  function abRender() {
+    var list = abLoad();
+    var tbody = $('abBody');
+    tbody.innerHTML = '';
+
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="ab-empty">저장된 항목이 없습니다.</td></tr>';
+      $('abPager').style.display = 'none';
+      return;
+    }
+
+    // 팀 가나다순 → 같은 팀 내 첫 번째 이름 직급순 → 이름 가나다순
+    var sorted = list.map(function(item, i) { return { item: item, origIdx: i }; });
+    var doSort = $('abSortToggle') ? $('abSortToggle').checked : true;
+    if (doSort) {
+      sorted.sort(function(a, b) {
+        var ta = a.item.team, tb = b.item.team;
+        var cmp = ta.localeCompare(tb, 'ko');
+        if (cmp !== 0) return cmp;
+        var na = (a.item.names.split(',')[0] || '').trim();
+        var nb = (b.item.names.split(',')[0] || '').trim();
+        var ra = getRank(na), rb = getRank(nb);
+        if (ra !== rb) return ra - rb;
+        return na.localeCompare(nb, 'ko');
+      });
+    }
+
+    // 검색 필터
+    var query = ($('abSearch') ? $('abSearch').value : '').trim().toLowerCase();
+    if (query) {
+      sorted = sorted.filter(function(e) {
+        return e.item.team.toLowerCase().includes(query) ||
+               e.item.names.toLowerCase().includes(query);
+      });
+    }
+
+    var totalPages = Math.ceil(sorted.length / AB_PAGE_SIZE);
+    if (abCurrentPage >= totalPages) abCurrentPage = totalPages - 1;
+    var start = abCurrentPage * AB_PAGE_SIZE;
+    var pageItems = sorted.slice(start, start + AB_PAGE_SIZE);
+
+    pageItems.forEach(function(entry, localIdx) {
+      var item    = entry.item;
+      var idx     = entry.origIdx;
+      var displayNo = start + localIdx + 1;
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td style="text-align:center;color:#94a3b8;font-size:0.78rem;">' + displayNo + '</td>' +
+        '<td><span class="team-badge">' + escHtml(item.team) + '</span></td>' +
+        '<td class="ab-names">' + escHtml(item.names) + '</td>' +
+        '<td style="text-align:center;"><button type="button" class="ab-use-btn"  data-idx="' + idx + '">➕</button></td>' +
+        '<td style="text-align:center;"><button type="button" class="ab-edit-btn" data-idx="' + idx + '">✏️</button></td>' +
+        '<td style="text-align:center;"><button type="button" class="ab-del-btn"  data-idx="' + idx + '">✕</button></td>';
+      tbody.appendChild(tr);
+    });
+
+    // 페이저
+    var pager = $('abPager');
+    if (totalPages <= 1) {
+      pager.style.display = 'none';
+    } else {
+      pager.style.display = 'flex';
+      $('abPageInfo').textContent = (abCurrentPage + 1) + ' / ' + totalPages;
+      $('abPrevBtn').disabled = abCurrentPage === 0;
+      $('abNextBtn').disabled = abCurrentPage >= totalPages - 1;
+    }
+
+    tbody.querySelectorAll('.ab-use-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var item = abLoad()[+this.dataset.idx];
+        if (!item) return;
+        var added = abAddToField(item.team, item.names);
+        if (added) {
+          showToast('✅ ' + item.team + ' ' + item.names + ' 이 추가되었습니다.');
+        } else {
+          showToast('⚠️ ' + item.team + ' ' + item.names + ' 은 이미 추가되어 있습니다.');
+        }
+      });
+    });
+
+    tbody.querySelectorAll('.ab-edit-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var idx = +this.dataset.idx;
+        var item = abLoad()[idx];
+        if (!item) return;
+        var tr = this.closest('tr');
+        // 인라인 편집 모드로 전환
+        tr.innerHTML =
+          '<td></td>' +
+          '<td><input class="ab-edit-input" id="editTeam_' + idx + '" value="' + escHtml(item.team) + '"></td>' +
+          '<td><input class="ab-edit-input" id="editNames_' + idx + '" value="' + escHtml(item.names) + '"></td>' +
+          '<td style="text-align:center;"><button type="button" class="ab-edit-save" data-idx="' + idx + '">저장</button></td>' +
+          '<td colspan="2" style="text-align:center;"><button type="button" class="ab-edit-cancel">취소</button></td>';
+
+        tr.querySelector('.ab-edit-save').addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          var newTeam  = tr.querySelector('#editTeam_'  + idx).value.trim();
+          var newNames = tr.querySelector('#editNames_' + idx).value.trim();
+          if (!newTeam || !newNames) { alert('팀명과 참석자를 모두 입력해 주세요.'); return; }
+          var list = abLoad();
+          list[idx] = { team: newTeam, names: newNames };
+          abSave(list);
+          abRender();
+          showToast('✅ 수정되었습니다.');
+        });
+
+        tr.querySelector('.ab-edit-cancel').addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          abRender();
+        });
+
+        // Enter 저장 / Escape 취소
+        tr.querySelectorAll('.ab-edit-input').forEach(function(inp) {
+          inp.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') tr.querySelector('.ab-edit-save').click();
+            if (e.key === 'Escape') abRender();
+          });
+        });
+
+        tr.querySelector('#editNames_' + idx).focus();
+      });
+    });
+
+    tbody.querySelectorAll('.ab-del-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var list = abLoad();
+        list.splice(+this.dataset.idx, 1);
+        abSave(list);
+        abRender();
+      });
+    });
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // 같은 팀이면 이름 이어붙이고(중복 제외), 다른 팀은 공백으로 구분
+  // 반환값: true = 새로 추가됨, false = 이미 있어서 추가 안 됨
+  // ── 참석자 칩 렌더링 ──
+  function parseAttendeeSegments(val) {
+    // "[팀A] 이름1, 이름2 [팀B] 이름3" → [{team, names:[]}]
+    var segs = [];
+    val.trim().split(/(?=\[)/).forEach(function(seg) {
+      seg = seg.trim();
+      if (!seg) return;
+      var m = seg.match(/^\[(.+?)\]\s*(.*)$/);
+      if (m) {
+        var names = m[2].split(',').map(function(n){ return n.trim(); }).filter(Boolean);
+        if (names.length) segs.push({ team: m[1].trim(), names: names });
+      }
+    });
+    return segs;
+  }
+
+  function buildAttendeesValue(segs) {
+    return segs.map(function(s) {
+      return '[' + s.team + '] ' + s.names.join(', ');
+    }).join(' ');
+  }
+
+  function renderAttendeeChips() {
+    var container = $('attendeesChips');
+    var val = $('attendees').value.trim();
+    var segs = val ? parseAttendeeSegments(val) : [];
+    container.innerHTML = '';
+    if (!segs.length) {
+      container.innerHTML = '<span id="attendeesPlaceholder" style="color:#94a3b8;font-size:0.88rem;padding-left:7px;">참석자 리스트에서 추가해 주세요.</span>';
+      return;
+    }
+
+    var rowDragSrc  = null;
+    var chipDragSrc = null; // { team, name }
+
+    function clearIndicators() {
+      container.querySelectorAll('.att-chip').forEach(function(c) { c.classList.remove('chip-drop-before','chip-drop-after'); });
+      container.querySelectorAll('.att-row').forEach(function(r)  { r.classList.remove('row-drop-above','row-drop-below'); });
+    }
+
+    segs.forEach(function(seg) {
+      var row = document.createElement('div');
+      row.className = 'att-row';
+      row.dataset.team = seg.team;
+
+      var handle = document.createElement('span');
+      handle.className = 'att-row-handle';
+      handle.textContent = '⠿';
+      handle.addEventListener('mousedown', function() { row.draggable = true; });
+      handle.addEventListener('mouseup',   function() { row.draggable = false; });
+      row.appendChild(handle);
+
+      var badge = document.createElement('span');
+      badge.className = 'att-row-team';
+      badge.textContent = seg.team;
+      row.appendChild(badge);
+
+      seg.names.forEach(function(name) {
+        var chip = document.createElement('span');
+        chip.className = 'att-chip';
+        chip.draggable = true;
+        chip.dataset.team = seg.team;
+        chip.dataset.name = name;
+        chip.innerHTML = '<span>' + escHtml(name) + '</span>'
+          + ' <span class="att-chip-x" data-team="' + escHtml(seg.team) + '" data-name="' + escHtml(name) + '">✕</span>';
+
+        chip.querySelector('.att-chip-x').addEventListener('click', function() {
+          var t = this.dataset.team, n = this.dataset.name;
+          var s2 = parseAttendeeSegments($('attendees').value);
+          s2 = s2.map(function(s) {
+            if (s.team !== t) return s;
+            return { team: s.team, names: s.names.filter(function(x){ return x !== n; }) };
+          }).filter(function(s){ return s.names.length > 0; });
+          $('attendees').value = buildAttendeesValue(s2);
+          renderAttendeeChips();
+          saveFormState();
+        });
+        chip.addEventListener('dragstart', function(e) {
+          chipDragSrc = { team: seg.team, name: name };
+          e.stopPropagation();
+          e.dataTransfer.effectAllowed = 'move';
+          setTimeout(function() { chip.style.opacity = '0.4'; }, 0);
+        });
+        chip.addEventListener('dragend', function() {
+          chip.style.opacity = '';
+          clearIndicators();
+          chipDragSrc = null;
+        });
+        row.appendChild(chip);
+      });
+
+      row.addEventListener('dragstart', function(e) {
+        if (chipDragSrc) return;
+        rowDragSrc = row;
+        e.dataTransfer.effectAllowed = 'move';
+        setTimeout(function() { row.style.opacity = '0.4'; }, 0);
+      });
+      row.addEventListener('dragend', function() {
+        row.draggable = false;
+        row.style.opacity = '';
+        clearIndicators();
+        rowDragSrc = null;
+      });
+
+      container.appendChild(row);
+    });
+
+    // 컨테이너 레벨에서 dragover/drop 통합 처리 → 빠른 드래그도 안정적으로 잡힘
+    container.addEventListener('dragover', function(e) {
+      if (!chipDragSrc && !rowDragSrc) return;
+      e.preventDefault();
+      clearIndicators();
+
+      if (chipDragSrc) {
+        var tc = e.target.closest ? e.target.closest('.att-chip') : null;
+        var tr = e.target.closest ? e.target.closest('.att-row') : null;
+        if (!tr) return;
+        if (tr.dataset.team !== chipDragSrc.team) return; // 다른 팀 행은 무시
+        if (tc && !(tc.dataset.team === chipDragSrc.team && tc.dataset.name === chipDragSrc.name)) {
+          var r = tc.getBoundingClientRect();
+          tc.classList.add(e.clientX < r.left + r.width / 2 ? 'chip-drop-before' : 'chip-drop-after');
+        } else if (!tc) {
+          var rowChips = Array.from(tr.querySelectorAll('.att-chip')).filter(function(c) {
+            return !(c.dataset.name === chipDragSrc.name && c.dataset.team === chipDragSrc.team);
+          });
+          var inserted = false;
+          for (var i = 0; i < rowChips.length; i++) {
+            var cr = rowChips[i].getBoundingClientRect();
+            if (e.clientX < cr.left + cr.width / 2) {
+              rowChips[i].classList.add('chip-drop-before');
+              inserted = true;
+              break;
+            }
+          }
+          if (!inserted && rowChips.length) rowChips[rowChips.length - 1].classList.add('chip-drop-after');
+        }
+      } else {
+        var tr = e.target.closest ? e.target.closest('.att-row') : null;
+        if (!tr || tr === rowDragSrc) return;
+        var r = tr.getBoundingClientRect();
+        tr.classList.add(e.clientY < r.top + r.height / 2 ? 'row-drop-above' : 'row-drop-below');
+      }
+    });
+
+    container.addEventListener('drop', function(e) {
+      e.preventDefault();
+      clearIndicators();
+
+      if (chipDragSrc) {
+        var tc = e.target.closest ? e.target.closest('.att-chip') : null;
+        var tr = e.target.closest ? e.target.closest('.att-row') : null;
+        if (!tr) { chipDragSrc = null; return; }
+        var srcTeam = chipDragSrc.team, srcName = chipDragSrc.name;
+        var tgtTeam = tr.dataset.team;
+        if (tgtTeam !== srcTeam) { chipDragSrc = null; return; } // 다른 팀 행은 무시
+        if (tc && tc.dataset.team === srcTeam && tc.dataset.name === srcName) { chipDragSrc = null; return; }
+        var curSegs = parseAttendeeSegments($('attendees').value);
+        curSegs = curSegs.map(function(s) {
+          if (s.team !== srcTeam) return s;
+          return { team: s.team, names: s.names.filter(function(n) { return n !== srcName; }) };
+        }).filter(function(s) { return s.names.length > 0; });
+        var ti = curSegs.findIndex(function(s) { return s.team === tgtTeam; });
+        if (ti === -1) {
+          curSegs.push({ team: tgtTeam, names: [srcName] });
+        } else if (tc && tc.dataset.team === tgtTeam) {
+          var r = tc.getBoundingClientRect();
+          var before = e.clientX < r.left + r.width / 2;
+          var ni = curSegs[ti].names.indexOf(tc.dataset.name);
+          if (ni === -1) ni = curSegs[ti].names.length;
+          curSegs[ti].names.splice(before ? ni : ni + 1, 0, srcName);
+        } else {
+          // 허공에 놓으면 X 좌표 기준으로 삽입 위치 결정
+          var rowChips = Array.from(tr.querySelectorAll('.att-chip')).filter(function(c) {
+            return !(c.dataset.name === srcName && c.dataset.team === srcTeam);
+          });
+          var insertAt = curSegs[ti].names.length;
+          for (var i = 0; i < rowChips.length; i++) {
+            var cr = rowChips[i].getBoundingClientRect();
+            if (e.clientX < cr.left + cr.width / 2) { insertAt = i; break; }
+          }
+          curSegs[ti].names.splice(insertAt, 0, srcName);
+        }
+        $('attSortToggle').checked = false;
+        chipDragSrc = null;
+        $('attendees').value = buildAttendeesValue(curSegs);
+        renderAttendeeChips();
+        saveFormState();
+
+      } else if (rowDragSrc) {
+        var tr = e.target.closest ? e.target.closest('.att-row') : null;
+        if (!tr || tr === rowDragSrc) { rowDragSrc = null; return; }
+        var curSegs = parseAttendeeSegments($('attendees').value);
+        var dragTeam = rowDragSrc.dataset.team, dropTeam = tr.dataset.team;
+        var di = curSegs.findIndex(function(s) { return s.team === dragTeam; });
+        if (di === -1) { rowDragSrc = null; return; }
+        var r = tr.getBoundingClientRect();
+        var before = e.clientY < r.top + r.height / 2;
+        var dragSeg = curSegs.splice(di, 1)[0];
+        var ni = curSegs.findIndex(function(s) { return s.team === dropTeam; });
+        curSegs.splice(before ? ni : ni + 1, 0, dragSeg);
+        rowDragSrc = null;
+        $('attSortToggle').checked = false;
+        $('attendees').value = buildAttendeesValue(curSegs);
+        renderAttendeeChips();
+        saveFormState();
+      }
+    });
+  }
+
+  function abAddToField(team, names) {
+    var cur = $('attendees').value.trim();
+    if (!cur) {
+      var initNames = sortNames(names.split(',').map(function(n){ return n.trim(); }).filter(Boolean));
+      $('attendees').value = '[' + team + '] ' + initNames.join(', ');
+      renderAttendeeChips();
+      return true;
+    }
+    var segments = cur.split(/(?:\s*\/\s*|\s+)(?=\[)/);
+    var found = false;
+    var anyAdded = false;
+    var result = segments.map(function(seg) {
+      seg = seg.trim();
+      var m = seg.match(/^\[(.+?)\]\s*(.*)$/);
+      if (m && m[1] === team) {
+        found = true;
+        var existing = m[2].split(',').map(function(n) { return n.trim(); }).filter(Boolean);
+        names.split(',').map(function(n) { return n.trim(); }).filter(Boolean).forEach(function(n) {
+          if (!existing.some(function(e) { return e === n; })) {
+            existing.push(n);
+            anyAdded = true;
+          }
+        });
+        return '[' + team + '] ' + sortNames(existing).join(', ');
+      }
+      return seg;
+    });
+    if (!found) {
+      var newNames = sortNames(names.split(',').map(function(n){ return n.trim(); }).filter(Boolean));
+      result.push('[' + team + '] ' + newNames.join(', '));
+      anyAdded = true;
+    }
+    // 팀 가나다 순 정렬
+    result.sort(function(a, b) {
+      var ma = a.match(/^\[(.+?)\]/), mb = b.match(/^\[(.+?)\]/);
+      var ta = ma ? ma[1] : a, tb = mb ? mb[1] : b;
+      return ta.localeCompare(tb, 'ko');
+    });
+    $('attendees').value = result.join(' ');
+    renderAttendeeChips();
+    return anyAdded;
+  }
+
+  // 이름과 직급이 붙어있는지 확인 (예: "김승현선임" → 경고) — ALL_RANKS는 RANK_MAP 정의 후 초기화
+  function checkNameSpacing(namesStr) {
+    var parts = namesStr.split(',').map(function(s) { return s.trim(); });
+    var bad = [];
+    parts.forEach(function(name) {
+      ALL_RANKS.forEach(function(rank) {
+        // 직급이 끝에 붙어있고 그 앞에 공백이 없는 경우
+        if (name.endsWith(rank) && name.length > rank.length) {
+          var before = name.slice(0, name.length - rank.length);
+          if (before && before[before.length - 1] !== ' ') {
+            bad.push(name);
+          }
+        }
+      });
+    });
+    return bad;
+  }
+
+  function abDoSave() {
+    var team  = $('abTeam').value.trim();
+    var names = $('abNames').value.trim();
+    if (!team || !names) { alert('팀명과 참석자를 모두 입력해 주세요.'); return; }
+
+    // 이름+직급 띄어쓰기 확인
+    var badNames = checkNameSpacing(names);
+    if (badNames.length) {
+      alert('이름과 직급을 띄어 써 주세요.\n\n예) ' + badNames.map(function(n) {
+        var rank = ALL_RANKS.find(function(r) { return n.endsWith(r); });
+        return '"' + n + '" → "' + n.slice(0, n.length - rank.length) + ' ' + rank + '"';
+      }).join('\n'));
+      return;
+    }
+
+    var list = abLoad();
+    var dup = list.some(function(x) { return x.team === team && x.names === names; });
+    if (dup) { showToast('⚠️ 이미 등록된 항목입니다.'); return; }
+    list.push({ team: team, names: names });
+    abSave(list);
+    $('abTeam').value = '';
+    $('abNames').value = '';
+    abCurrentPage = 0;
+    abRender();
+    showToast('✅ 저장되었습니다.');
+  }
+
+  $('abPrevBtn').addEventListener('click', function() {
+    if (abCurrentPage > 0) { abCurrentPage--; abRender(); }
+  });
+  $('abNextBtn').addEventListener('click', function() {
+    var total = Math.ceil(abLoad().length / AB_PAGE_SIZE);
+    if (abCurrentPage < total - 1) { abCurrentPage++; abRender(); }
+  });
+
+  $('abSearch').addEventListener('input', function() {
+    abCurrentPage = 0;
+    abRender();
+  });
+
+  $('abSortToggle').addEventListener('change', function() {
+    abCurrentPage = 0;
+    abRender();
+  });
+
+  // ── txt 파일 가져오기/내보내기 ──
+  function abParseTxt(text) {
+    var result = [];
+    text.split(/\r?\n/).forEach(function(line) {
+      line = line.trim();
+      if (!line) return;
+      var m = line.match(/^\[(.+?)\]\s*(.+)$/);
+      if (m) result.push({ team: m[1].trim(), names: m[2].trim() });
+    });
+    return result;
+  }
+
+  // ── 모달 공통 ──
+  function ensureAbOpen() {
+    // abWrap is always visible; no toggle needed
+  }
+  function openAbModal(mode) {
+    var modal    = $('abTextModal');
+    var textarea = $('abModalTextarea');
+    var btnCopy  = $('abModalCopy');
+    var btnConf  = $('abModalConfirm');
+    if (mode === 'export') {
+      var list = abLoad();
+      if (!list.length) { alert('저장된 항목이 없습니다.'); return; }
+      $('abModalTitle').textContent = '참석자 리스트 내보내기';
+      $('abModalDesc').textContent  = '아래 내용을 복사해서 메모장 등에 붙여넣어 저장하세요.';
+      textarea.value    = list.map(function(item) { return '[' + item.team + '] ' + item.names; }).join('\n');
+      textarea.readOnly = true;
+      btnCopy.style.display              = 'inline-block';
+      $('abModalDownload').style.display = 'inline-block';
+      $('abModalFileBtn').style.display  = 'none';
+      btnConf.style.display              = 'none';
+    } else {
+      $('abModalTitle').textContent = '참석자 리스트 불러오기';
+      $('abModalDesc').textContent  = '저장해 둔 텍스트를 아래에 붙여넣고 [불러오기]를 눌러주세요.\n형식: [팀명] 이름 직급';
+      textarea.value    = '';
+      textarea.readOnly = false;
+      btnCopy.style.display              = 'none';
+      $('abModalDownload').style.display = 'none';
+      $('abModalFileBtn').style.display  = 'inline-block';
+      btnConf.style.display              = 'inline-block';
+    }
+    modal.style.display = 'flex';
+    if (mode === 'export') textarea.select();
+    else textarea.focus();
+  }
+
+  $('abModalClose').addEventListener('click', function() {
+    $('abTextModal').style.display = 'none';
+  });
+  $('abTextModal').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none'; // 배경 클릭으로 닫기
+  });
+
+  $('abModalCopy').addEventListener('click', function() {
+    var textarea = $('abModalTextarea');
+    textarea.select();
+    try {
+      navigator.clipboard.writeText(textarea.value).then(function() {
+        showToast('📋 클립보드에 복사되었습니다.');
+      }).catch(function() {
+        document.execCommand('copy');
+        showToast('📋 클립보드에 복사되었습니다.');
+      });
+    } catch(e) {
+      document.execCommand('copy');
+      showToast('📋 클립보드에 복사되었습니다.');
+    }
+  });
+
+  $('abModalConfirm').addEventListener('click', function() {
+    var text   = $('abModalTextarea').value.trim();
+    if (!text) { alert('내용을 붙여넣어 주세요.'); return; }
+    var parsed = abParseTxt(text);
+    if (!parsed.length) { alert('형식에 맞는 항목이 없습니다.\n예: [팀명] 이름 직급'); return; }
+    var list = abLoad();
+    var added = 0;
+    parsed.forEach(function(item) {
+      var dup = list.some(function(x) { return x.team === item.team && x.names === item.names; });
+      if (!dup) { list.push(item); added++; }
+    });
+    abSave(list);
+    $('abTextModal').style.display = 'none';
+    ensureAbOpen();
+    abRender();
+    var nameCount = parsed.reduce(function(sum, item) {
+      return sum + item.names.split(',').filter(function(n){ return n.trim(); }).length;
+    }, 0);
+    showToast('✅ ' + nameCount + '명의 참석자를 불러왔습니다.');
+  });
+
+  $('abModalFileBtn').addEventListener('click', function() {
+    $('abModalFileInput').click();
+  });
+  $('abModalFileInput').addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      $('abModalTextarea').value = ev.target.result.replace(/^﻿/, ''); // BOM 제거
+    };
+    reader.readAsText(file, 'UTF-8');
+    this.value = '';
+  });
+
+  $('abModalDownload').addEventListener('click', function() {
+    var text = $('abModalTextarea').value;
+    if (!text) return;
+    var now = new Date();
+    var dateTag = now.getFullYear()
+      + String(now.getMonth()+1).padStart(2,'0')
+      + String(now.getDate()).padStart(2,'0');
+    var blob = new Blob(['﻿' + text], { type: 'text/plain;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    var fileName = '참석자목록_' + dateTag + '.txt';
+    a.href = url; a.download = fileName;
+    document.body.appendChild(a); a.click();
+    setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+    showToast('✅ ' + fileName + ' 저장되었습니다.');
+  });
+
+  $('abImportBtn').addEventListener('click', function() { openAbModal('import'); });
+  $('abExportBtn').addEventListener('click', function() { openAbModal('export'); });
+
+  // mousedown으로 처리해야 input blur 전에 값 읽기 가능
+  $('abAddBtn').addEventListener('mousedown', function(e) {
+    e.preventDefault(); // input에서 포커스 안 빠져나가게
+    abDoSave();
+  });
+
+  // 키보드로 저장
+  ['abTeam','abNames'].forEach(function(id) {
+    $(id).addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') abDoSave();
+    });
+  });
+
+  // ── API 키 ──
+  const savedKey = localStorage.getItem('gemini_api_key');
+  if (savedKey) $('apiKey').value = savedKey;
+
+  $('apiKey').addEventListener('input', function() {
+    if (this.value.trim()) localStorage.setItem('gemini_api_key', this.value.trim());
+  });
+
+  $('apiToggle').addEventListener('click', function() {
+    const wrap = $('apiKeyWrap');
+    const isOpen = wrap.classList.toggle('open');
+    $('apiArrow').textContent = isOpen ? '▲' : '▼';
+  });
+
+  // ── 모드 전환 ──
+  let currentMode = 'ai';
+
+  function switchMode(mode) {
+    currentMode = mode;
+    $('modeAI').style.display     = mode === 'ai'     ? 'block' : 'none';
+    $('modeManual').style.display = mode === 'manual' ? 'block' : 'none';
+    $('tabAI').classList.toggle('active',     mode === 'ai');
+    $('tabManual').classList.toggle('active', mode === 'manual');
+  }
+
+  $('tabAI').addEventListener('click',     function() { switchMode('ai'); });
+  $('tabManual').addEventListener('click', function() { switchMode('manual'); });
+
+  // ── 테이블 행 ──
+  function makeTypeSelect(selected) {
+    var blankOpt = '<option value=""' + (selected === '' ? ' selected' : '') + '></option>';
+    return '<select>' + blankOpt + TYPE_OPTIONS.map(function(t) {
+      return '<option' + (t === selected ? ' selected' : '') + '>' + t + '</option>';
+    }).join('') + '</select>';
+  }
+
+  function autoResize() {
+    this.style.height = 'auto';
+    this.style.height = this.scrollHeight + 'px';
+  }
+
+  // ── Follow up 팀 커스텀 드롭다운 ──
+  function getAttendeeTeams() {
+    var val = $('attendees').value.trim();
+    if (!val) return [];
+    var teams = [];
+    val.split(/(?=\[)/).forEach(function(seg) {
+      var m = seg.trim().match(/^\[(.+?)\]/);
+      if (m && !teams.includes(m[1].trim())) teams.push(m[1].trim());
+    });
+    return teams;
+  }
+  function makeFollowupInput(value) {
+    return '<div class="fu-wrap">' +
+      '<input type="text" value="' + (value||'') + '" placeholder="팀명 입력/선택">' +
+      '<button type="button" class="fu-drop-btn" tabindex="-1">▼</button>' +
+      '<div class="fu-dropdown"></div>' +
+    '</div>';
+  }
+  function attachFollowupDropdown(td) {
+    var input  = td.querySelector('input[type="text"]');
+    var btn    = td.querySelector('.fu-drop-btn');
+    var dd     = td.querySelector('.fu-dropdown');
+    function openDd() {
+      var teams = getAttendeeTeams();
+      if (!teams.length) return;
+      dd.innerHTML = teams.map(function(t) {
+        return '<div class="fu-dropdown-item">' + t + '</div>';
+      }).join('');
+      dd.querySelectorAll('.fu-dropdown-item').forEach(function(item) {
+        item.addEventListener('mousedown', function(e) {
+          e.preventDefault();
+          input.value = item.textContent;
+          dd.classList.remove('open');
+          saveFormState();
+        });
+      });
+      dd.classList.add('open');
+    }
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dd.classList.contains('open') ? dd.classList.remove('open') : openDd();
+    });
+    input.addEventListener('blur', function() { setTimeout(function(){ dd.classList.remove('open'); }, 150); });
+    document.addEventListener('click', function(e) { if (!td.contains(e.target)) dd.classList.remove('open'); });
+  }
+
+  // ── 참석자 칩 드래그 ──
+  var chipDragTeam = null;
+
+  function rebuildAttendeesFromChips() {
+    var chips = $('attendeesChips').querySelectorAll('.att-chip');
+    var segs = [];
+    chips.forEach(function(chip) {
+      var x = chip.querySelector('.att-chip-x');
+      var team = x.dataset.team, name = x.dataset.name;
+      var seg = segs.find(function(s) { return s.team === team; });
+      if (seg) seg.names.push(name);
+      else segs.push({ team: team, names: [name] });
+    });
+    $('attendees').value = buildAttendeesValue(segs);
+    saveFormState();
+  }
+
+  // ── 드래그 앤 드롭 ──
+  var dragSrc = null;
+  var dropBefore = true;
+
+  function clearDropIndicators() {
+    document.querySelectorAll('#manualBody tr, #resultBody tr').forEach(function(r) {
+      r.classList.remove('drop-above', 'drop-below');
+    });
+  }
+
+  function attachDragEvents(tr) {
+    tr.draggable = false;
+
+    var handle = tr.querySelector('.drag-handle');
+    if (handle) {
+      handle.addEventListener('mousedown', function() { tr.draggable = true; });
+      handle.addEventListener('mouseup',   function() { tr.draggable = false; });
+    }
+
+    tr.addEventListener('dragstart', function(e) {
+      dragSrc = tr;
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(function() { tr.style.opacity = '0.4'; }, 0);
+    });
+
+    tr.addEventListener('dragend', function() {
+      tr.draggable = false;
+      tr.style.opacity = '';
+      clearDropIndicators();
+      saveFormState();
+    });
+
+    tr.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (!dragSrc || dragSrc === tr) return;
+      clearDropIndicators();
+      var rect = tr.getBoundingClientRect();
+      dropBefore = (e.clientY < rect.top + rect.height / 2);
+      tr.classList.add(dropBefore ? 'drop-above' : 'drop-below');
+    });
+
+    tr.addEventListener('drop', function(e) {
+      e.preventDefault();
+      clearDropIndicators();
+      if (dragSrc && dragSrc !== tr) {
+        var tbody = dragSrc.parentElement;
+        if (dropBefore) tbody.insertBefore(dragSrc, tr);
+        else            tbody.insertBefore(dragSrc, tr.nextSibling);
+      }
+    });
+  }
+
+  function addTopicRow(label, tbodyId) {
+    tbodyId = tbodyId || 'manualBody';
+    const tbody = $(tbodyId);
+    const tr = document.createElement('tr');
+    tr.dataset.rowType = 'topic';
+    tr.innerHTML =
+      '<td class="drag-handle" style="vertical-align:middle;" title="드래그하여 순서 변경">⠿</td>' +
+      '<td colspan="3" style="background:#fff0f0;padding:0;">' +
+        '<div style="display:flex;align-items:center;padding:6px 10px;">' +
+          '<span style="color:#b91c1c;font-weight:700;font-size:0.92rem;white-space:nowrap;user-select:none;">[</span>' +
+          '<span contenteditable="true" class="topic-input" data-placeholder="주제명 입력 (예: ThinQ ON 미국향)" ' +
+          'style="display:inline-block;min-width:4px;border:none;background:transparent;font-weight:700;color:#b91c1c;font-size:0.92rem;outline:none;font-family:inherit;padding:0 2px;white-space:pre;">' + (label||'') + '</span>' +
+          '<span style="color:#b91c1c;font-weight:700;font-size:0.92rem;white-space:nowrap;user-select:none;">]</span>' +
+        '</div>' +
+      '</td>' +
+      '<td class="del-cell"><button type="button" class="del-row-btn" title="삭제">✕</button></td>';
+    tbody.appendChild(tr);
+    tr.querySelector('.del-row-btn').addEventListener('click', function() { tr.remove(); saveFormState(); });
+    var ti = tr.querySelector('.topic-input');
+    ti.addEventListener('input', saveFormState);
+    ti.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); } });
+    ti.addEventListener('paste', function(e) {
+      e.preventDefault();
+      var text = (e.clipboardData || window.clipboardData).getData('text/plain').replace(/\n/g,'');
+      document.execCommand('insertText', false, text);
+    });
+    attachDragEvents(tr);
+  }
+
+  function addResultRow(content, type, followup, tbodyId) {
+    content  = content  || '';
+    type     = (type !== undefined && type !== null) ? type : '';
+    followup = followup || '';
+    tbodyId  = tbodyId  || 'resultBody';
+
+    const tbody = $(tbodyId);
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td class="drag-handle" style="vertical-align:middle;" title="드래그하여 순서 변경">⠿</td>' +
+      '<td style="vertical-align:middle;padding:0;">' +
+        '<div style="display:flex;align-items:flex-start;">' +
+          '<span style="padding:8px 3px 8px 10px;font-size:0.88rem;white-space:nowrap;color:#374151;user-select:none;line-height:1.5;">•</span>' +
+          '<textarea rows="2" placeholder="논의 내용을 입력하세요" style="flex:1;padding:8px 10px 8px 4px;">' + content + '</textarea>' +
+        '</div>' +
+      '</td>' +
+      '<td style="text-align:center;vertical-align:middle;">' + makeTypeSelect(type) + '</td>' +
+      '<td style="vertical-align:middle;">' + makeFollowupInput(followup) + '</td>' +
+      '<td class="del-cell" style="vertical-align:middle;"><button type="button" class="del-row-btn" title="삭제">✕</button></td>';
+    tbody.appendChild(tr);
+
+    const ta = tr.querySelector('textarea');
+    ta.addEventListener('input', autoResize);
+    autoResize.call(ta);
+
+    tr.querySelector('.del-row-btn').addEventListener('click', function() {
+      tr.remove();
+      saveFormState();
+    });
+    attachDragEvents(tr);
+    var fuTd = tr.querySelector('.fu-wrap') ? tr.querySelector('.fu-wrap').parentElement : null;
+    if (fuTd) attachFollowupDropdown(fuTd);
+
+    // 행 내용 변경 시 저장
+    tr.querySelectorAll('textarea, input, select').forEach(function(el) {
+      el.addEventListener('change', saveFormState);
+      el.addEventListener('input', saveFormState);
+    });
+  }
+
+  // ── 폼 상태 저장/복원 ──
+  var FORM_KEY = 'meeting_form_v1';
+
+  function getTableRows(tbodyId) {
+    var rows = [];
+    $(tbodyId).querySelectorAll('tr').forEach(function(tr) {
+      if (tr.dataset.rowType === 'topic') {
+        var label = (tr.querySelector('.topic-input') || {}).textContent || '';
+        rows.push({ content: label, type: '__topic__', followup: '' });
+      } else {
+        var content  = (tr.querySelector('textarea') || {}).value || '';
+        var type     = (tr.querySelector('select')   || {}).value || '';
+        var fuInput  = tr.querySelector('td:not(.drag-handle):not(.del-cell) input[type="text"]');
+        var followup = fuInput ? fuInput.value : '';
+        rows.push({ content: content, type: type, followup: followup });
+      }
+    });
+    return rows;
+  }
+
+  function saveFormState() {
+    try {
+      localStorage.setItem(FORM_KEY, JSON.stringify({
+        title:         $('title').value,
+        date:          $('date').value,
+        timeStart:    $('timeStart').value,
+        timeDuration: $('timeDuration').value,
+        location:      $('location').value,
+        attendees:     $('attendees').value,
+        rawContent:    $('rawContent').value,
+        mode:          currentMode,
+        resultRows:    getTableRows('resultBody'),
+        manualRows:    getTableRows('manualBody'),
+        resultVisible: $('resultSection').style.display !== 'none'
+      }));
+    } catch(e) {}
+  }
+
+  function loadFormState() {
+    try {
+      var s = JSON.parse(localStorage.getItem(FORM_KEY));
+      if (!s) return;
+      if (s.title)     $('title').value     = s.title;
+      if (s.date)      $('date').value      = s.date;
+      if (s.timeStart)    $('timeStart').value    = s.timeStart;
+      if (s.timeDuration) $('timeDuration').value = s.timeDuration;
+      if (s.location)  $('location').value  = s.location;
+      if (s.attendees) { $('attendees').value = s.attendees; renderAttendeeChips(); }
+      if (s.rawContent) $('rawContent').value = s.rawContent;
+
+      // 직접 입력 행 복원
+      if (s.manualRows && s.manualRows.length) {
+        $('manualBody').innerHTML = '';
+        s.manualRows.forEach(function(r) {
+          if (r.type === '__topic__') addTopicRow(r.content, 'manualBody');
+          else addResultRow(r.content, r.type, r.followup, 'manualBody');
+        });
+      }
+      // AI 결과 행 복원
+      if (s.resultRows && s.resultRows.length) {
+        $('resultBody').innerHTML = '';
+        s.resultRows.forEach(function(r) {
+          if (r.type === '__topic__') addTopicRow(r.content, 'resultBody');
+          else addResultRow(r.content, r.type, r.followup, 'resultBody');
+        });
+        if (s.resultVisible) $('resultSection').style.display = 'block';
+      }
+      // 모드 복원
+      if (s.mode) switchMode(s.mode);
+    } catch(e) {}
+  }
+
+  // 직접 입력 초기 행 (1행) — 복원 전 기본값
+  addResultRow('','','','manualBody');
+
+  // 저장된 상태 복원
+  loadFormState();
+  updateWeekdayLabel();
+
+  // 참석자 가나다·직급순 정렬 토글
+  $('attSortToggle').addEventListener('change', function() {
+    if (!this.checked) return;
+    var segs = parseAttendeeSegments($('attendees').value);
+    segs.forEach(function(s) { s.names = sortNames(s.names); });
+    $('attendees').value = buildAttendeesValue(segs);
+    renderAttendeeChips();
+    saveFormState();
+  });
+
+  // 기본 입력 필드 변경 시 저장
+  ['title','date','timeStart','timeDuration','location','rawContent'].forEach(function(id) {
+    $(id).addEventListener('input',  saveFormState);
+    $(id).addEventListener('change', saveFormState);
+  });
+
+  // 행 추가 버튼
+  $('addRowResult').addEventListener('click', function() { addResultRow('','','','resultBody'); saveFormState(); });
+  $('addTopicResult').addEventListener('click', function() { addTopicRow('', 'resultBody'); saveFormState(); });
+  $('addRowManual').addEventListener('click', function() { addResultRow('','','','manualBody'); saveFormState(); });
+  $('addTopicManual').addEventListener('click', function() { addTopicRow('', 'manualBody'); saveFormState(); });
+
+  // ── AI 분류 ──
+  $('classifyBtn').addEventListener('click', async function() {
+    const raw = $('rawContent').value.trim();
+    if (!raw) { alert('회의 내용을 먼저 입력해 주세요.'); return; }
+
+    const apiKey = $('apiKey').value.trim();
+    if (!apiKey) {
+      $('apiKeyWrap').classList.add('open');
+      $('apiArrow').textContent = '▲';
+      alert('Gemini API 키를 입력해 주세요.');
+      $('apiKey').focus();
+      return;
+    }
+
+    const btn = $('classifyBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> AI가 분류 중...';
+
+    try {
+      const prompt = `당신은 회의록 작성 전문가입니다.
+아래 회의 내용을 읽고, 각 항목을 JSON 배열로 분류해 주세요.
+
+회의 내용:
+"""
+${raw}
+"""
+
+다음 JSON 형식으로만 응답하세요 (설명 없이 JSON만):
+{
+  "titles": ["회의 제목 후보1", "회의 제목 후보2", "회의 제목 후보3"],
+  "items": [
+    {
+      "content": "주요 논의 사항",
+      "type": "지시/보고/협의/결정/공유/요청/기타 중 하나",
+      "followup": "담당 조직명 (없으면 빈 문자열)"
+    }
+  ]
+}
+
+작성 지침:
+- titles: 회의 내용을 대표하는 제목 후보를 3가지 작성하세요. 각각 표현 방식이나 강조점이 달라야 합니다. '~회의', '~논의', '~검토', '~협의' 등으로 끝내세요. (예: "QE 조직 신설 및 양산 일정 검토 회의")
+- content: 두괄식으로 핵심 결론·결정을 먼저 쓰고, 필요한 경우 이유나 조건을 간결하게 이어 쓰세요. 문장은 '~함', '~할 것', '~어려움', '~필요' 등 짧고 간결한 명사형으로 끝내세요. '합니다/하였습니다/되었습니다' 등 경어체, '대두되었음/표명하였음/강조하였음' 등 과장되거나 장황한 표현, '또한/그리고/아울러' 등 접속어로 시작하는 문장은 사용하지 마세요. 예시: "추후 QE팀 미 설립시 양산 승인 및 차기 프로젝트 Final DR 승인 어려움, QE 조직 설립할 것"처럼 간결하게 작성하세요.
+- type: 지시/보고/협의/결정/공유/요청/해야할 일/Comment/기타 중 정확히 하나만 선택하세요.
+- followup: 담당 조직명(팀명, 부서명 등)만 작성하세요. 할 일이나 설명은 절대 포함하지 마세요. (예: "개발팀", "마케팅팀", "HR팀") 담당 조직이 없으면 빈 문자열로 두세요.
+- 하나의 주제(안건)가 논리적으로 이어지는 내용이면 하나의 항목으로 묶고, 명확히 다른 주제일 때만 별도 항목으로 분리하세요.`;
+
+      const res = await fetch(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + apiKey,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { maxOutputTokens: 8192 }
+          })
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.json().catch(function() { return {}; });
+        throw new Error((err.error && err.error.message) || ('API 오류 ' + res.status));
+      }
+
+      const data = await res.json();
+      const candidate = data.candidates && data.candidates[0];
+      if (!candidate) throw new Error('응답 형식이 올바르지 않습니다. (candidates 없음)');
+
+      // finishReason이 있으면 확인
+      const finishReason = candidate.finishReason;
+      if (finishReason && finishReason !== 'STOP') {
+        throw new Error('AI 응답이 완료되지 않았습니다. (' + finishReason + ')');
+      }
+
+      const rawText = (candidate.content && candidate.content.parts && candidate.content.parts[0] && candidate.content.parts[0].text) || '';
+      // 마크다운 코드블록 제거 후 JSON 추출
+      const cleaned = rawText.replace(/```(?:json)?\s*/gi, '').replace(/```\s*/g, '').trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('응답 형식이 올바르지 않습니다.\n\n[AI 응답 원문]\n' + rawText.slice(0, 300));
+      const parsed = JSON.parse(jsonMatch[0]);
+      const items = parsed.items || parsed;
+
+      // 제목 추천 칩 표시
+      const suggestions = parsed.titles || (parsed.title ? [parsed.title] : []);
+      const suggestBox = $('titleSuggestions');
+      suggestBox.innerHTML = '';
+      if (suggestions.length) {
+        suggestBox.style.display = 'flex';
+        suggestions.forEach(function(t) {
+          const chip = document.createElement('span');
+          chip.className = 'title-chip';
+          chip.textContent = t;
+          chip.addEventListener('click', function() {
+            $('title').value = t;
+            suggestBox.querySelectorAll('.title-chip').forEach(function(c) { c.classList.remove('selected'); });
+            chip.classList.add('selected');
+            saveFormState();
+          });
+          suggestBox.appendChild(chip);
+        });
+        // 기존 제목과 일치하는 칩이 있으면 selected 표시
+        const curTitle = $('title').value.trim();
+        if (curTitle) {
+          suggestBox.querySelectorAll('.title-chip').forEach(function(c) {
+            if (c.textContent === curTitle) c.classList.add('selected');
+          });
+        }
+      } else {
+        suggestBox.style.display = 'none';
+      }
+
+      $('resultBody').innerHTML = '';
+      items.forEach(function(item) {
+        addResultRow(item.content, item.type, item.followup, 'resultBody');
+      });
+
+      $('resultSection').style.display = 'block';
+      $('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      saveFormState();
+      showToast('✅ 분류가 완료되었습니다!');
+
+    } catch(e) {
+      alert('오류: ' + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '✨ AI로 자동 분류하기';
+    }
+  });
+
+  // ── PPT 생성 ──
+  $('clearBtn').addEventListener('click', function() {
+    if (!confirm('모든 입력 내용을 초기화하시겠습니까?\n(참석자 저장 목록은 유지됩니다)')) return;
+
+    // 기본 정보 초기화
+    $('title').value = '';
+    $('location').value = '';
+    $('attendees').value = ''; renderAttendeeChips();
+
+    // 날짜를 오늘로
+    const today = new Date();
+    $('date').value = today.getFullYear() + '-'
+      + String(today.getMonth()+1).padStart(2,'0') + '-'
+      + String(today.getDate()).padStart(2,'0');
+    updateWeekdayLabel();
+    buildTimeOptions('timeStart', '09:00');
+    $('timeDuration').value = '60';
+
+    // AI 입력 초기화
+    $('rawContent').value = '';
+    $('resultBody').innerHTML = '';
+    $('resultSection').style.display = 'none';
+    $('titleSuggestions').innerHTML = '';
+    $('titleSuggestions').style.display = 'none';
+
+    // 직접 입력 초기화
+    $('manualBody').innerHTML = '';
+    addResultRow('','','','manualBody');
+
+    // localStorage 폼 상태 삭제
+    localStorage.removeItem(FORM_KEY);
+
+    showToast('🗑 초기화되었습니다.');
+  });
+
+  $('generateBtn').addEventListener('click', function() {
+    const title     = $('title').value.trim();
+    const dateVal   = $('date').value;
+    const timeStart = $('timeStart').value;
+    const durationMin = parseInt($('timeDuration').value, 10);
+    const [sh, sm] = timeStart.split(':').map(Number);
+    const endTotal = sh * 60 + sm + durationMin;
+    const timeEnd = String(Math.floor(endTotal / 60)).padStart(2,'0') + ':' + String(endTotal % 60).padStart(2,'0');
+    const location  = $('location').value.trim();
+    const attendees = $('attendees').value.trim();
+
+    if (!title)     { alert('회의 제목을 입력해 주세요.'); return; }
+    if (!dateVal)   { alert('날짜를 입력해 주세요.'); return; }
+    if (!location)  { alert('장소를 입력해 주세요.'); return; }
+    if (!attendees) { alert('참석자를 입력해 주세요.'); return; }
+
+    const tbodyId = currentMode === 'ai' ? 'resultBody' : 'manualBody';
+    const agendaItems = [];
+    $(tbodyId).querySelectorAll('tr').forEach(function(tr) {
+      if (tr.dataset.rowType === 'topic') {
+        var label = (tr.querySelector('.topic-input') || {}).textContent || '';
+        if (label.trim()) agendaItems.push({ content: label.trim(), type: '__topic__', followup: '' });
+      } else {
+        const content  = (tr.querySelector('textarea') || {}).value;
+        const type     = (tr.querySelector('select')   || {}).value;
+        var fuInput2 = tr.querySelector('td:not(.drag-handle):not(.del-cell) input[type="text"]');
+        const followup = fuInput2 ? fuInput2.value : '';
+        if (content && content.trim()) {
+          agendaItems.push({ content: content.trim(), type: (type||'').trim(), followup: (followup||'').trim() });
+        }
+      }
+    });
+
+    if (agendaItems.length === 0) {
+      alert(currentMode === 'ai' ? '먼저 AI 자동 분류를 실행해 주세요.' : '회의 내용을 1개 이상 입력해 주세요.');
+      return;
+    }
+
+    const weekday = getWeekday(dateVal);
+    const d = new Date(dateVal);
+    const dateStr = d.getFullYear() + '년 '
+      + String(d.getMonth()+1).padStart(2,'0') + '월 '
+      + String(d.getDate()).padStart(2,'0') + '일(' + weekday + ') '
+      + timeStart + ' ~ ' + timeEnd;
+
+    buildPPT({ title, dateStr, dateVal, location, attendees, agendaItems });
+  });
+
+  // ── 직급 정렬 ──
+  var RANK_MAP = [
+    { rank: 0, titles: ['소장'] },
+    { rank: 1, titles: ['담당'] },
+    { rank: 2, titles: ['실장', 'PMO', 'BL'] },
+    { rank: 3, titles: ['팀장'] },
+    { rank: 4, titles: ['책임'] },
+    { rank: 5, titles: ['선임'] },
+    { rank: 6, titles: ['연구원', '사원'] }
+  ];
+  var ALL_RANKS = RANK_MAP.reduce(function(acc, r) { return acc.concat(r.titles); }, []);
+
+  function getRank(name) {
+    var t = name.trim();
+    for (var i = 0; i < RANK_MAP.length; i++) {
+      for (var j = 0; j < RANK_MAP[i].titles.length; j++) {
+        if (t.endsWith(RANK_MAP[i].titles[j])) return RANK_MAP[i].rank;
+      }
+    }
+    return 99; // 목록에 없으면 맨 뒤
+  }
+
+  abRender(); // RANK_MAP / getRank 정의 이후 최초 렌더
+
+  function sortNames(namesArr) {
+    return namesArr.slice().sort(function(a, b) {
+      var ra = getRank(a), rb = getRank(b);
+      if (ra !== rb) return ra - rb;
+      return a.localeCompare(b, 'ko');
+    });
+  }
+
+  var FONT_KO = 'LG스마트체 Regular';
+  var FONT_EN = 'Arial Narrow';
+
+  // 한글 여부 판단
+  function isKoreanChar(code) {
+    return (code >= 0xAC00 && code <= 0xD7A3) ||
+           (code >= 0x1100 && code <= 0x11FF) ||
+           (code >= 0x3130 && code <= 0x318F);
+  }
+
+  // 문자열을 한글/영문 구간으로 나눠 fontFace 가 다른 run 배열 반환
+  function fontRuns(str, baseOpts) {
+    if (!str) return [{ text: '', options: Object.assign({}, baseOpts, { fontFace: FONT_EN }) }];
+    var runs = [], cur = '', curKo = null;
+    for (var i = 0; i < str.length; i++) {
+      var ko = isKoreanChar(str.charCodeAt(i));
+      if (curKo === null) { curKo = ko; cur = str[i]; }
+      else if (ko === curKo) { cur += str[i]; }
+      else {
+        runs.push({ text: cur, options: Object.assign({}, baseOpts, { fontFace: curKo ? FONT_KO : FONT_EN }) });
+        cur = str[i]; curKo = ko;
+      }
+    }
+    if (cur) runs.push({ text: cur, options: Object.assign({}, baseOpts, { fontFace: curKo ? FONT_KO : FONT_EN }) });
+    return runs;
+  }
+
+  // 참석자용: [팀명] 은 bold, 나머지는 normal, 한글/영문 font 분리
+  function attendeeRuns(str, baseOpts) {
+    var result = [];
+    var regex = /(\[[^\]]+\])/g;
+    var last = 0, m;
+    while ((m = regex.exec(str)) !== null) {
+      if (m.index > last) fontRuns(str.slice(last, m.index), Object.assign({}, baseOpts, { bold: false })).forEach(function(r){ result.push(r); });
+      fontRuns(m[1], Object.assign({}, baseOpts, { bold: true })).forEach(function(r){ result.push(r); });
+      last = regex.lastIndex;
+    }
+    if (last < str.length) fontRuns(str.slice(last), Object.assign({}, baseOpts, { bold: false })).forEach(function(r){ result.push(r); });
+    return result.length ? result : fontRuns(str, baseOpts);
+  }
+
+  // ── PPT 빌드 (원본 양식 재현) ──
+  function buildPPT(opts) {
+    var title = opts.title, dateStr = opts.dateStr, dateVal = opts.dateVal, location = opts.location,
+        attendees = opts.attendees, agendaItems = opts.agendaItems;
+
+    var pptx = new PptxGenJS();
+    pptx.defineLayout({ name: 'ORIG', width: 10.83, height: 7.5 });
+    pptx.layout = 'ORIG';
+
+    var BORDER_HDR  = { pt: 0.75, color: '404040' };
+    var BORDER_NONE = { pt: 0.75, color: 'FFFFFF' };
+
+    // ── 테이블 행 전체 구성 ──
+    var tblRows = [], rowHeights = [];
+
+    // 헤더
+    tblRows.push([
+      { text: fontRuns('주요 논의 사항', {fontSize:12, bold:true, color:'000000'}), options: { align:'center', valign:'middle', fill:{color:'D9D9D9'}, border:[BORDER_HDR,BORDER_HDR,BORDER_HDR,BORDER_HDR], margin:4 } },
+      { text: fontRuns('유 형',         {fontSize:12, bold:true, color:'000000'}), options: { align:'center', valign:'middle', fill:{color:'D9D9D9'}, border:[BORDER_HDR,BORDER_HDR,BORDER_HDR,BORDER_HDR], margin:4 } },
+      { text: fontRuns('Follow up',    {fontSize:12, bold:true, color:'000000'}), options: { align:'center', valign:'middle', fill:{color:'D9D9D9'}, border:[BORDER_HDR,BORDER_HDR,BORDER_HDR,BORDER_HDR], margin:4 } }
+    ]);
+    rowHeights.push(0.35);
+
+    // 데이터 행
+    agendaItems.forEach(function(item) {
+      if (item.type === '__topic__') {
+        tblRows.push([
+          { text: fontRuns(' [' + item.content + ']', {fontSize:12, bold:true, color:'8B0000'}),
+            options: { align:'left', valign:'middle', fill:{color:'FFFFFF'}, colspan:3,
+                       border:[BORDER_NONE,BORDER_NONE,BORDER_NONE,BORDER_NONE], margin:4 } }
+        ]);
+        rowHeights.push(0.32);
+      } else {
+        tblRows.push([
+          { text: (function(c){ var lines=c.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n'); var runs=[]; lines.forEach(function(line,idx){ if(idx>0) runs.push({text:'',options:{breakLine:true,fontFace:FONT_EN,fontSize:12,color:'000000'}}); fontRuns((idx===0?'  • ':'    ')+line,{fontSize:12,color:'000000'}).forEach(function(r){runs.push(r);}); }); return runs; })(item.content), options: { align:'left', valign:'middle', fill:{color:'FFFFFF'}, border:[BORDER_NONE,BORDER_NONE,BORDER_NONE,BORDER_NONE], margin:4 } },
+          { text: fontRuns(item.type,     {fontSize:12, color:'000000'}), options: { align:'center', valign:'middle', fill:{color:'FFFFFF'}, border:[BORDER_NONE,BORDER_NONE,BORDER_NONE,BORDER_NONE], margin:4 } },
+          { text: fontRuns(item.followup, {fontSize:12, color:'000000'}), options: { align:'center', valign:'middle', fill:{color:'FFFFFF'}, border:[BORDER_NONE,BORDER_NONE,BORDER_NONE,BORDER_NONE], margin:4 } }
+        ]);
+        rowHeights.push(0.42);
+      }
+    });
+
+    // ── 참석자 줄 수 추정 → 1페이지 테이블 Y 동적 조정 ──
+    function estimateLines(text, widthIn) {
+      var w = 0, lines = 1, maxW = widthIn - 0.06;
+      for (var i = 0; i < text.length; i++) {
+        var cw = isKoreanChar(text.charCodeAt(i)) ? 0.12 : 0.06;
+        w += cw;
+        if (w > maxW) { lines++; w = cw; }
+      }
+      return Math.max(1, lines);
+    }
+    var LINE_H       = 0.22;
+    var ATT_TOP      = 3.26 / 2.54;
+    var GAP          = 0.22;
+    var attLines     = estimateLines(attendees, 8.3);
+    var tableY       = ATT_TOP + (attLines * LINE_H) + GAP;   // 1페이지 테이블 시작 Y
+    var PAGE2_TBL_Y  = 1.75 / 2.54;                           // 2페이지~ 테이블 시작 Y (정보 섹션 없음)
+    var rectBottom   = 18.12 / 2.54;                          // 고정 하단
+
+    // ── 페이지 분할: 가용 높이 초과 시 다음 페이지로 ──
+    var pages = [];
+    var curRows = [tblRows[0]], curH_arr = [rowHeights[0]], curH = rowHeights[0];
+    var avail = rectBottom - tableY;
+    for (var ri = 1; ri < tblRows.length; ri++) {
+      var rh = rowHeights[ri];
+      if (curH + rh > avail) {
+        pages.push({ rows: curRows, rowH: curH_arr });
+        curRows  = [tblRows[0]];
+        curH_arr = [rowHeights[0]];
+        curH     = rowHeights[0];
+        avail    = rectBottom - PAGE2_TBL_Y;
+      }
+      curRows.push(tblRows[ri]);
+      curH_arr.push(rh);
+      curH += rh;
+    }
+    pages.push({ rows: curRows, rowH: curH_arr });
+
+    // ── 슬라이드 생성 (페이지별) ──
+    pages.forEach(function(page, pageIdx) {
+      var slide = pptx.addSlide();
+      var tblY  = pageIdx === 0 ? tableY : PAGE2_TBL_Y;
+
+      // 제목
+      slide.addText(fontRuns('[회의록] ' + title, { fontSize:18, bold:true, color:'000000' }), {
+        x: 0.307, y: 0.56 / 2.54, w: 10.0, h: 0.35,
+        align: 'left', valign: 'middle', autoFit: true
+      });
+
+      // 구분선
+      slide.addShape(pptx.ShapeType.line, {
+        x: 0.56 / 2.54, y: 1.51 / 2.54, w: 26.41 / 2.54, h: 0,
+        line: { color: 'BFBFBF', width: 2.25, dashType: 'solid', cap: 'flat', joinType: 'miter' }
+      });
+
+      // 정보 행 — 1페이지만
+      if (pageIdx === 0) {
+        [
+          { label: ' 일        시 :', value: dateStr,  ly: 1.85 / 2.54 },
+          { label: ' 장        소 :', value: location, ly: 2.54 / 2.54 },
+          { label: ' 참  석   자 :', value: attendees, ly: 3.26 / 2.54, isAttendee: true }
+        ].forEach(function(info) {
+          var isAtt  = !!info.isAttendee;
+          var boxH   = isAtt ? 0.01 : 0.22;
+          var vAlign = isAtt ? 'top' : 'middle';
+          var labelRuns = [
+            { text: String.fromCharCode(113), options: { fontFace: 'Wingdings', fontSize: 12, bold: false, color: '000000' } },
+            { text: info.label,               options: { fontFace: FONT_KO,     fontSize: 12, bold: true,  color: '000000' } }
+          ];
+          slide.addText(labelRuns, {
+            x: 0.35, y: info.ly, w: 3.1 / 2.54, h: boxH,
+            align: 'left', valign: vAlign, autoFit: true
+          });
+          var valueRuns = isAtt
+            ? attendeeRuns(info.value, { fontSize:12, color:'000000' })
+            : fontRuns(info.value, { fontSize:12, bold:true, color:'000000' });
+          slide.addText(valueRuns, {
+            x: 3.9 / 2.54, y: info.ly, w: 8.3, h: boxH,
+            align: 'left', valign: vAlign, margin: 2, autoFit: true
+          });
+        });
+      }
+
+      // 테이블
+      slide.addTable(page.rows, {
+        x: 0.516, y: tblY, w: 9.8,
+        colW: [6.0, 1.3, 2.5],
+        rowH: page.rowH
+      });
+
+      // 테두리 사각형
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 1.31 / 2.54, y: tblY, w: 24.87 / 2.54, h: rectBottom - tblY,
+        fill: { type: 'none' },
+        line: { color: '000000', width: 1, dashType: 'solid', cap: 'flat', joinType: 'miter' }
+      });
+    });
+
+    var dateSuffix = '';
+    if (dateVal) {
+      var dp = dateVal.replace(/-/g, '');
+      dateSuffix = '_' + dp.slice(2); // YYMMDD
+    }
+    var safeTitle = title.replace(/[\/\\:*?"<>|]/g, ''); // 띄어쓰기는 유지, 특수문자만 제거
+    var fileName = '[회의록] ' + safeTitle + dateSuffix + '.pptx';
+    pptx.write('blob').then(function(blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+      showToast('✅ PPT 파일이 다운로드되었습니다!');
+    }).catch(function(err) {
+      console.error(err);
+      alert('생성 중 오류가 발생했습니다: ' + err.message);
+    });
+  }
+</script>
+</body>
+</html>
