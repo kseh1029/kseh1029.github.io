@@ -2612,6 +2612,9 @@ function updateCountdown() {
       const bodyEl = document.querySelector('[data-i18n="inv_body"]');
       if (bodyEl && i18n.inv_body_after) bodyEl.innerHTML = i18n.inv_body_after;
     }
+    // INVITATION 라벨 → 감사 인사 라벨로 변경
+    const invLabelEl = document.querySelector('#invitation .section-label');
+    if (invLabelEl) invLabelEl.textContent = 'THANKS';
     const rsvpEl = document.getElementById('rsvp');
     if (rsvpEl) rsvpEl.style.display = 'none';
     const ceremonyEl = document.getElementById('ceremony');
