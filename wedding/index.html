@@ -1789,6 +1789,16 @@
 
   /* 초기 볼륨 100% */
   _audio.volume = 1.0;
+
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: '승현 🩶 다솔 결혼합니다',
+      artist: '2026. 10. 31 · 부산 그랜드 모먼트',
+      artwork: [
+        { src: 'album-art.jpg', sizes: '404x600', type: 'image/jpeg' }
+      ]
+    });
+  }
 </script>
 
 <div class="wrap">
