@@ -2590,16 +2590,46 @@ const CFG = {
    COUNTDOWN
    ================================================ */
 function updateCountdown() {
-  const diff = CFG.WEDDING_DATE - new Date();
+  const now = new Date();
+  const diff = CFG.WEDDING_DATE - now;
+  const AFTER_DATE = new Date('2026-11-01T00:00:00+09:00');
+  const isAfter = now >= AFTER_DATE;
+
   if (diff <= 0) {
+    // 결혼식 시작 이후: 카운트다운에 메시지 표시
     const l = (window._lang) || (localStorage.getItem('wlang') || 'ko');
     const msg = l === 'en' ? '💍 We got married 🩶'
               : l === 'zh' ? '💍 我们结婚了 🩶'
               : '💍 행복하게 잘 살겠습니다 🩶';
     document.getElementById('countdown').innerHTML =
       `<p style="font-size:13px;color:rgba(255,255,255,0.8);letter-spacing:2px;">${msg}</p>`;
+  }
+  if (isAfter) {
+    // 11월 1일 이후: 청첩장 문구 → 감사 인사 + RSVP 숨김
+    const l = (window._lang) || (localStorage.getItem('wlang') || 'ko');
+    if (window._i18n) {
+      const i18n = _i18n[l] || _i18n['ko'];
+      const bodyEl = document.querySelector('[data-i18n="inv_body"]');
+      if (bodyEl && i18n.inv_body_after) bodyEl.innerHTML = i18n.inv_body_after;
+    }
+    const rsvpEl = document.getElementById('rsvp');
+    if (rsvpEl) rsvpEl.style.display = 'none';
+    const ceremonyEl = document.getElementById('ceremony');
+    if (ceremonyEl) ceremonyEl.style.display = 'none';
+    const agodaEl = document.querySelector('.agoda-card');
+    if (agodaEl) agodaEl.style.display = 'none';
+    // 주변 숙소 → 추천 명소로 타이틀/설명 변경
+    const nearbyTitleEl = document.querySelector('[data-i18n="nearby_title"]');
+    const nearbyDescEl  = document.querySelector('[data-i18n="nearby_desc"]');
+    if (nearbyTitleEl) nearbyTitleEl.innerHTML = l === 'en' ? 'Nearby Attractions' : l === 'zh' ? '周边景点' : '추천 명소';
+    if (nearbyDescEl)  nearbyDescEl.style.display = 'none';
+    const spotsDivider = document.querySelector('.spots-divider');
+    const spotsLabel   = document.querySelector('.spots-label');
+    if (spotsDivider) spotsDivider.style.display = 'none';
+    if (spotsLabel)   spotsLabel.style.display = 'none';
     return;
   }
+  if (diff <= 0) return;
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
@@ -3195,7 +3225,7 @@ function changeGuest(d) {
 /* ================================================
    I18N — LANGUAGE TOGGLE
    ================================================ */
-const _i18n = {
+var _i18n = {
   ko: {
     hero_names: '김승현<span class="hero-heart">♥</span>김다솔',
     cnt_days: '일', cnt_hrs: '시간', cnt_min: '분',
@@ -3204,6 +3234,8 @@ const _i18n = {
     inv_label: 'Invitation',
     inv_title: '초대합니다',
     inv_body: '가을이 깊어지는 계절에<br>소중한 분들께 좋은 소식을 전합니다.<br>함께하는 시간이 자연스럽고 편안한 사람과<br>새로운 시작을 준비하게 되었습니다.<br><br>앞으로의 날들도 이 계절처럼<br>차분하고 따뜻하게<br>두 사람이 함께 잘 채워가겠습니다.<br>기쁜 날에 오셔서 축복해 주시면<br>큰 기쁨이 되겠습니다.',
+    inv_title_after: '감사합니다',
+    inv_body_after: '바쁘신 중에도 저희의 결혼을 축하해 주신<br>모든 분들께 진심으로 감사드립니다.<br><br>베풀어 주신 따뜻한 사랑을 기억하며,<br>행복하고 아름다운 가정을 이루겠습니다.',
     groom_side: '신 랑 측',
     bride_side: '신 부 측',
     groom_parents: '(故) 김창득 · 이재숙의 차남',
@@ -3345,6 +3377,8 @@ const _i18n = {
     inv_label: 'Invitation',
     inv_title: 'We\'re Getting Married',
     inv_body: 'As autumn deepens,<br>we share wonderful news<br>with those dear to us.<br>We have found in each other<br>a calm and natural presence,<br>and are ready to begin anew.<br><br>We hope to fill each coming day<br>with quiet warmth,<br>growing together, side by side.<br>We would be honored<br>to celebrate this joyful day with you.',
+    inv_title_after: 'Thank You',
+    inv_body_after: 'To everyone who took the time<br>to celebrate our wedding with us,<br>we are deeply grateful.<br><br>We will carry your warmth and love with us<br>as we build a happy life together.',
     groom_side: 'Groom\'s Side',
     bride_side: 'Bride\'s Side',
     groom_parents: 'Second son of (late) Chang-deuk Kim & Jae-sook Lee',
@@ -3486,6 +3520,8 @@ const _i18n = {
     inv_label: '邀请函',
     inv_title: '诚邀您的参与',
     inv_body: '在这深秋时节，<br>我们向挚爱的您带来喜讯。<br>我们找到了那个相处自然、<br>令人心安的人，<br>并准备开始新的旅程。<br><br>愿今后的每一天<br>都如这季节般沉静而温暖，<br>两人携手，慢慢填满。<br>诚挚邀请您莅临见证，<br>您的到来将是我们最大的喜悦。',
+    inv_title_after: '感谢您',
+    inv_body_after: '感谢所有百忙之中<br>前来祝福我们的朋友与家人。<br><br>您的温情与爱意我们将铭记于心，<br>我们会携手相伴，<br>共建幸福美满的家庭。',
     groom_side: '新郎家',
     bride_side: '新娘家',
     groom_parents: '（故）金昌得 · 李在淑<br>之次男',
@@ -3658,6 +3694,7 @@ function setLang(lang) {
       el.innerHTML = t;
     }
   });
+  updateCountdown();
 }
 
 /* 캘린더 저장 (.ics) */
