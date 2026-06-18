@@ -2521,11 +2521,11 @@
   </section>
 
   <!-- ───────────────── FOOTER ───────────────── -->
-  <!-- 카카오링크 공유 -->
+  <!-- 공유 버튼 -->
   <div class="kakao-share-wrap">
-    <button class="kakao-share-btn" onclick="shareKakao()">
-      <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" alt="kakao">
-      카카오톡으로 공유하기
+    <button class="kakao-share-btn" id="shareBtn" onclick="handleShare()">
+      <img id="shareBtnImg" src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" alt="kakao">
+      <span id="shareBtnTxt" data-i18n="share_btn">카카오톡으로 공유하기</span>
     </button>
   </div>
 
@@ -2633,6 +2633,41 @@ function switchTab(id, btn) {
 
 /* 카카오링크 공유 */
 Kakao.init('55c507e236bc2058e4d21c9b1cd92246');
+function handleShare() {
+  if (_lang === 'ko') {
+    shareKakao();
+  } else {
+    if (navigator.share) {
+      navigator.share({
+        title: _lang === 'zh'
+          ? '金承賢 ❤️ 金茶率 婚礼请柬'
+          : 'Seunghyun ❤️ Dasol Wedding',
+        text: _lang === 'zh'
+          ? '2026年10月31日 · 釜山 Grand Moment Classic Hall'
+          : '2026. 10. 31 SAT 5PM · Grand Moment Classic Hall, Busan',
+        url: 'https://kseh1029.github.io/wedding/',
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText('https://kseh1029.github.io/wedding/')
+        .then(() => alert(_lang === 'zh' ? '链接已复制！' : 'Link copied!'));
+    }
+  }
+}
+
+function updateShareBtn() {
+  const img = document.getElementById('shareBtnImg');
+  const btn = document.getElementById('shareBtn');
+  if (_lang === 'ko') {
+    img.style.display = '';
+    btn.style.background = '#FEE500';
+    btn.style.color = '#3A1D1D';
+  } else {
+    img.style.display = 'none';
+    btn.style.background = '#1a73e8';
+    btn.style.color = '#ffffff';
+  }
+}
+
 function shareKakao() {
   Kakao.Share.sendDefault({
     objectType: 'location',
@@ -3263,6 +3298,7 @@ const _i18n = {
     spot3_name: '이기대 공원', spot3_desc: '탁 트인 해안 절경과<br>조용한 산책로', spot3_when: '🌅 다음날 오전 추천', spot3_dist: '차 10분',
     spot4_name: '센텀시티', spot4_desc: '세계 최대 규모 신세계백화점<br>쇼핑 · 식사', spot4_when: '🌅 다음날 오전 추천', spot4_dist: '차 15분',
     nav_wedding: '예식', nav_gallery: '갤러리', nav_directions: '오시는길', nav_gift: '마음', nav_around: '주변',
+    share_btn: '카카오톡으로 공유하기',
     ftr_names: '김승현 &nbsp;·&nbsp; 김다솔',
     ftr_date: '2026 · 10 · 31',
     ftr_venue: '그랜드 모먼트 클래식홀 · 부산',
@@ -3403,6 +3439,7 @@ const _i18n = {
     spot3_name: 'Igidae Park', spot3_desc: 'Breathtaking coastal scenery<br>and quiet walking trails', spot3_when: '🌅 Next Morning', spot3_dist: '10 min by car',
     spot4_name: 'Centum City', spot4_desc: 'World\'s largest Shinsegae<br>department store · Shopping · Dining', spot4_when: '🌅 Next Morning', spot4_dist: '15 min by car',
     nav_wedding: 'Wedding', nav_gallery: 'Gallery', nav_directions: 'Directions', nav_gift: 'Gift', nav_around: 'Around',
+    share_btn: 'Share Invitation',
     ftr_names: 'Seunghyun Kim &nbsp;·&nbsp; Dasol Kim',
     ftr_date: '2026 · 10 · 31',
     ftr_venue: 'Grand Moment Classic Hall · Busan',
@@ -3543,6 +3580,7 @@ const _i18n = {
     spot3_name: '二妓台公园', spot3_desc: '开阔的海岸风光<br>与静谧的步行道', spot3_when: '🌅 次日上午推荐', spot3_dist: '驾车10分钟',
     spot4_name: '新世界百货', spot4_desc: '世界最大新世界百货商场<br>购物 · 餐饮', spot4_when: '🌅 次日上午推荐', spot4_dist: '驾车15分钟',
     nav_wedding: '婚礼', nav_gallery: '相册', nav_directions: '交通', nav_gift: '礼金', nav_around: '周边',
+    share_btn: '分享请柬',
     ftr_names: '金承賢 &nbsp;·&nbsp; 金茶率',
     ftr_date: '2026 · 10 · 31',
     ftr_venue: 'Grand Moment 古典厅 · 釜山',
@@ -3595,6 +3633,7 @@ function setLang(lang) {
   document.querySelectorAll('.lang-option').forEach(el => {
     el.classList.toggle('active', el.getAttribute('onclick') === `selectLang('${lang}')`);
   });
+  updateShareBtn();
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     const t = _i18n[lang][key];
