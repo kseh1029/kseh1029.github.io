@@ -2592,8 +2592,12 @@ const CFG = {
 function updateCountdown() {
   const diff = CFG.WEDDING_DATE - new Date();
   if (diff <= 0) {
+    const l = (window._lang) || (localStorage.getItem('wlang') || 'ko');
+    const msg = l === 'en' ? '💍 We got married 🩶'
+              : l === 'zh' ? '💍 我们结婚了 🩶'
+              : '💍 행복하게 잘 살겠습니다 🩶';
     document.getElementById('countdown').innerHTML =
-      '<p style="font-size:13px;color:rgba(255,255,255,0.8);letter-spacing:2px;">💍 오늘이 그 날입니다</p>';
+      `<p style="font-size:13px;color:rgba(255,255,255,0.8);letter-spacing:2px;">${msg}</p>`;
     return;
   }
   const d = Math.floor(diff / 86400000);
@@ -3617,7 +3621,7 @@ const _i18n = {
   }
 };
 
-let _lang = localStorage.getItem('wlang') || 'ko';
+var _lang = localStorage.getItem('wlang') || 'ko';
 const _langFlag = { ko: '🇰🇷', en: '🇺🇸', zh: '🇨🇳' };
 
 function _t(key) { return (_i18n[_lang] && _i18n[_lang][key]) || (_i18n.ko && _i18n.ko[key]) || key; }
