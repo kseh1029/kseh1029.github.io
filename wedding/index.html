@@ -188,6 +188,9 @@
       font-size: 19px;
       margin: 0 10px;
       color: var(--gold-lt);
+      vertical-align: middle;
+      position: relative;
+      top: -2px;
     }
 
     .hero-date {
@@ -219,6 +222,7 @@
     .cnt-item {
       text-align: center;
       padding: 0 14px;
+      min-width: 72px;
     }
     .cnt-item + .cnt-item { border-left: 1px solid rgba(255,255,255,0.2); }
 
@@ -1037,7 +1041,7 @@
       text-align: center;
       font-family: 'ChangwonDangamRound', sans-serif;
       font-size: 25px;
-      color: var(--text-dk);
+      color: #ffffff;
     }
 
     .cnt-unit { font-size: 13px; color: var(--text-lt); }
@@ -1799,15 +1803,15 @@
       <div class="countdown" id="countdown">
         <div class="cnt-item">
           <span class="cnt-num" id="cntD">--</span>
-          <span class="cnt-lbl">DAYS</span>
+          <span class="cnt-lbl" data-i18n="cnt_days">일</span>
         </div>
         <div class="cnt-item">
           <span class="cnt-num" id="cntH">--</span>
-          <span class="cnt-lbl">HRS</span>
+          <span class="cnt-lbl" data-i18n="cnt_hrs">시간</span>
         </div>
         <div class="cnt-item">
           <span class="cnt-num" id="cntM">--</span>
-          <span class="cnt-lbl">MIN</span>
+          <span class="cnt-lbl" data-i18n="cnt_min">분</span>
         </div>
       </div>
     </div>
@@ -2240,7 +2244,7 @@
         <div class="acc-col-cards">
           <div class="acc-card">
             <p class="acc-who" data-i18n="acc_who_groom">신랑 &nbsp;김승현</p>
-            <p class="acc-bank">신한은행</p>
+            <p class="acc-bank" data-i18n="bank_shinhan">신한은행</p>
             <p class="acc-num">110-593-292760</p>
             <button class="copy-btn" onclick="copyAcc(this,'110-593-292760')" data-i18n="copy_btn_1">📋 복사</button>
             <a class="kakao-btn" href="https://qr.kakaopay.com/Ej8p3Kagy" target="_blank" data-i18n="kakao_btn">카카오톡 송금</a>
@@ -2253,7 +2257,7 @@
         <div class="acc-col-cards">
           <div class="acc-card">
             <p class="acc-who" data-i18n="acc_who_bride">신부 &nbsp;김다솔</p>
-            <p class="acc-bank">국민은행</p>
+            <p class="acc-bank" data-i18n="bank_kb">KB국민은행</p>
             <p class="acc-num">655602-04-231589</p>
             <button class="copy-btn" onclick="copyAcc(this,'655602-04-231589')" data-i18n="copy_btn_3">📋 복사</button>
             <a class="kakao-btn" href="https://qr.kakaopay.com/FDsqorDsT" target="_blank" data-i18n="kakao_btn">카카오톡 송금</a>
@@ -3145,6 +3149,7 @@ function changeGuest(d) {
 const _i18n = {
   ko: {
     hero_names: '김승현<span class="hero-heart">♥</span>김다솔',
+    cnt_days: '일', cnt_hrs: '시간', cnt_min: '분',
     hero_date: '2026. 10. 31 토요일 오후 5:00',
     hero_venue: '부산 그랜드 모먼트 · 클래식홀',
     inv_label: 'Invitation',
@@ -3219,6 +3224,7 @@ const _i18n = {
     gift_title: '마음 전하기',
     acc_groom_side: '신랑측',
     acc_bride_side: '신부측',
+    bank_shinhan: '신한은행', bank_kb: 'KB국민은행',
     acc_who_groom: '신랑 &nbsp;김승현',
     acc_who_groom_mom: '신랑 어머니 &nbsp;이재숙',
     acc_who_bride: '신부 &nbsp;김다솔',
@@ -3283,6 +3289,7 @@ const _i18n = {
   },
   en: {
     hero_names: 'Seunghyun<span class="hero-heart">♥</span>Dasol',
+    cnt_days: 'DAYS', cnt_hrs: 'HRS', cnt_min: 'MIN',
     hero_date: '2026. 10. 31 SAT PM 5:00',
     hero_venue: 'Grand Moment Classic Hall · Busan',
     inv_label: 'Invitation',
@@ -3357,6 +3364,7 @@ const _i18n = {
     gift_title: 'Gift',
     acc_groom_side: 'Groom\'s Side',
     acc_bride_side: 'Bride\'s Side',
+    bank_shinhan: 'Shinhan Bank', bank_kb: 'KB Kookmin Bank',
     acc_who_groom: 'Seunghyun Kim (Groom)',
     acc_who_groom_mom: 'Jaesook Lee (Groom\'s Mother)',
     acc_who_bride: 'Dasol Kim (Bride)',
@@ -3421,6 +3429,7 @@ const _i18n = {
   },
   zh: {
     hero_names: '金承賢<span class="hero-heart">♥</span>金茶率',
+    cnt_days: '天', cnt_hrs: '时', cnt_min: '分',
     hero_date: '2026. 10. 31 周六 下午 5:00',
     hero_venue: '釜山 Grand Moment 古典厅',
     inv_label: '邀请函',
@@ -3428,8 +3437,8 @@ const _i18n = {
     inv_body: '在这深秋时节，<br>我们向挚爱的您带来喜讯。<br>我们找到了那个相处自然、<br>令人心安的人，<br>并准备开始新的旅程。<br><br>愿今后的每一天<br>都如这季节般沉静而温暖，<br>两人携手，慢慢填满。<br>诚挚邀请您莅临见证，<br>您的到来将是我们最大的喜悦。',
     groom_side: '新郎家',
     bride_side: '新娘家',
-    groom_parents: '（故）金昌得 · 李在淑之次男',
-    bride_parents: '金钟文 · 金明任之次女',
+    groom_parents: '（故）金昌得 · 李在淑<br>之次男',
+    bride_parents: '金钟文 · 金明任<br>之次女',
     groom_label: '承賢',
     groom_mom_label: '新郎母亲',
     bride_label: '茶率',
@@ -3495,6 +3504,7 @@ const _i18n = {
     gift_title: '祝贺礼金',
     acc_groom_side: '新郎家',
     acc_bride_side: '新娘家',
+    bank_shinhan: '新韩银行', bank_kb: 'KB国民银行',
     acc_who_groom: '新郎 金承賢',
     acc_who_groom_mom: '新郎母亲 李在淑',
     acc_who_bride: '新娘 金茶率',
