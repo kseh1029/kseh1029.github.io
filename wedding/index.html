@@ -51,11 +51,16 @@
       --white: #ffffff;
     }
 
+    *, *:before, *:after {
+      touch-action: manipulation;
+    }
+
     body {
       font-family: 'ChangwonDangamRound', 'Malgun Gothic', sans-serif;
       background: #e0dbd3;
       color: var(--text-dk);
       -webkit-font-smoothing: antialiased;
+      touch-action: manipulation;
     }
 
     .wrap {
@@ -315,34 +320,77 @@
     }
 
     /* ===== GALLERY ===== */
-    #gallery { padding: 64px 0; }
+    #gallery { padding: 64px 0; background: #f2ede1; }
 
     .gallery-head { padding: 0 24px 24px; text-align: center; }
 
     .gallery-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
+      gap: 14px;
+      padding: 10px 16px;
     }
-
-    .gallery-item {
-      aspect-ratio: 1;
-      overflow: hidden;
-      background: var(--gold-lt);
+    .gallery-grid.collapsed .gallery-item:nth-child(n+10) {
+      display: none;
+    }
+    .gallery-toggle-btn {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: var(--gold-dk);
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 24px 0 0;
+      cursor: pointer;
+      font-family: 'ChangwonDangamRound', sans-serif;
+      font-size: 14px;
+      color: var(--text-lt);
+      letter-spacing: 0.05em;
+    }
+    .gallery-toggle-btn:focus {
+      outline: none;
+    }
+    .gallery-toggle-arrow {
       font-size: 13px;
-      gap: 5px;
+      color: var(--text-lt);
+      margin-top: 8px;
+      transition: transform 0.3s ease;
+    }
+    .gallery-toggle-arrow.open {
+      transform: rotate(180deg);
+    }
+    .gallery-grid:not(.collapsed) + .gallery-toggle-btn {
+      display: none;
+    }
+
+    .gallery-item {
+      aspect-ratio: 3 / 3.65;
+      overflow: hidden;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
       cursor: pointer;
       position: relative;
-      transition: opacity 0.18s;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.18s;
+      padding: 8px 8px 22px 8px;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.13), 0 3px 6px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 1px;
     }
-    .gallery-item:active { opacity: 0.7; }
-    .gallery-item span:first-child { font-size: 29px; }
-    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gallery-item:active {
+      opacity: 0.8;
+      transform: scale(0.97);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+    }
 
     /* ===== LIGHTBOX ===== */
     .lightbox {
@@ -1872,7 +1920,7 @@
       <p class="section-label">Gallery</p>
     </div>
     <!-- 사진 교체 방법: <div class="gallery-item" onclick="openLightbox(0)"><img src="photo1.jpg" alt=""></div> -->
-    <div class="gallery-grid" id="galleryGrid">
+    <div class="gallery-grid collapsed" id="galleryGrid">
       <div class="gallery-item" onclick="openLightbox(0)"><img src="photo1.jpg" alt="웨딩사진 1"></div>
       <div class="gallery-item" onclick="openLightbox(1)"><img src="photo2.jpg" alt="웨딩사진 2"></div>
       <div class="gallery-item" onclick="openLightbox(2)"><img src="photo3.jpg" alt="웨딩사진 3"></div>
@@ -1888,7 +1936,20 @@
       <div class="gallery-item" onclick="openLightbox(12)"><img src="photo13.jpg" alt="웨딩사진 13"></div>
       <div class="gallery-item" onclick="openLightbox(13)"><img src="photo14.jpg" alt="웨딩사진 14"></div>
       <div class="gallery-item" onclick="openLightbox(14)"><img src="photo15.jpg" alt="웨딩사진 15"></div>
+      <div class="gallery-item" onclick="openLightbox(15)"><img src="photo16.jpg" alt="웨딩사진 16"></div>
+      <div class="gallery-item" onclick="openLightbox(16)"><img src="photo17.jpg" alt="웨딩사진 17"></div>
+      <div class="gallery-item" onclick="openLightbox(17)"><img src="photo18.jpg" alt="웨딩사진 18"></div>
+      <div class="gallery-item" onclick="openLightbox(18)"><img src="photo19.jpg" alt="웨딩사진 19"></div>
+      <div class="gallery-item" onclick="openLightbox(19)"><img src="photo20.jpg" alt="웨딩사진 20"></div>
+      <div class="gallery-item" onclick="openLightbox(20)"><img src="photo21.jpg" alt="웨딩사진 21"></div>
+      <div class="gallery-item" onclick="openLightbox(21)"><img src="photo22.jpg" alt="웨딩사진 22"></div>
+      <div class="gallery-item" onclick="openLightbox(22)"><img src="photo23.jpg" alt="웨딩사진 23"></div>
+      <div class="gallery-item" onclick="openLightbox(23)"><img src="photo24.jpg" alt="웨딩사진 24"></div>
     </div>
+    <button class="gallery-toggle-btn fi d1" onclick="toggleGallery()" id="galleryToggleBtn">
+      <span id="galleryToggleTxt">사진 더보기</span>
+      <span class="gallery-toggle-arrow" id="galleryToggleArrow">▼</span>
+    </button>
   </section>
 
   <!-- ───────────────── DATE ───────────────── -->
@@ -2746,6 +2807,11 @@ function toggleCeremony() {
   const arrow = document.getElementById('ceremonyArrow');
   body.classList.toggle('open');
   arrow.classList.toggle('open');
+}
+
+function toggleGallery() {
+  const grid  = document.getElementById('galleryGrid');
+  grid.classList.remove('collapsed');
 }
 
 function copyAcc(btn, text) {
@@ -3729,6 +3795,23 @@ function saveCalendar() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+// 모바일 핀치 줌(두 손가락 확대) 방지
+document.addEventListener('touchstart', function (event) {
+  if (event.touches.length > 1) {
+    event.preventDefault();
+  }
+}, { passive: false });
+
+document.addEventListener('touchmove', function (event) {
+  if (event.touches.length > 1) {
+    event.preventDefault();
+  }
+}, { passive: false });
+
+document.addEventListener('gesturestart', function (e) {
+  e.preventDefault();
+});
 </script>
 
 </body>
