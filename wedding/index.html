@@ -2661,6 +2661,10 @@ function updateCountdown() {
               : '💍 행복하게 잘 살겠습니다 🩶';
     document.getElementById('countdown').innerHTML =
       `<p style="font-size:13px;color:rgba(255,255,255,0.8);letter-spacing:2px;">${msg}</p>`;
+
+    // RSVP 숨김 (예식 시작 이후에는 참석 의사 전달 불필요)
+    const rsvpEl = document.getElementById('rsvp');
+    if (rsvpEl) rsvpEl.style.display = 'none';
   }
   if (isAfter) {
     // 11월 1일 이후: 청첩장 문구 → 감사 인사 + RSVP 숨김
