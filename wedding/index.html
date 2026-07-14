@@ -414,6 +414,7 @@
       object-fit: contain;
       display: block;
       transition: opacity 0.18s;
+      pointer-events: auto;
     }
 
     .lb-placeholder {
@@ -2967,10 +2968,7 @@ function showRSVPDone(att) {
     show();
   };
 
-  /* 배경 탭으로 닫기 */
-  lb.addEventListener('click', function(e) {
-    if (e.target === lb) window.closeLightbox();
-  });
+  /* 배경 탭으로 닫기 비활성화 (X 버튼으로만 닫히도록 설정) */
 
   /* 스와이프 */
   var _tx = 0;
