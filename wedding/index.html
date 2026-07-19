@@ -679,23 +679,28 @@
       background: white;
       border-radius: 14px;
       padding: 4px;
-      gap: 3px;
+      gap: 4px;
       margin-bottom: 20px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+    .tab-bar::-webkit-scrollbar { display: none; }
 
     .tab-btn {
-      flex: 1;
-      padding: 10px 2px;
+      flex: 1 0 auto;
+      padding: 9px 8px;
       border: none;
       background: transparent;
       border-radius: 10px;
       font-family: 'ChangwonDangamRound', sans-serif;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-lt);
       cursor: pointer;
       transition: all 0.2s;
       white-space: nowrap;
+      text-align: center;
     }
     .tab-btn.on {
       background: var(--gold);
