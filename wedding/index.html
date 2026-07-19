@@ -40,6 +40,8 @@
       -moz-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
       text-size-adjust: 100%;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
     html {
       scroll-behavior: auto;
@@ -106,6 +108,8 @@
       color: var(--gold);
       text-align: center;
       margin-bottom: 20px;
+      white-space: nowrap;
+      word-break: keep-all;
     }
 
     .section-title {
@@ -115,6 +119,8 @@
       text-align: center;
       color: var(--text-dk);
       margin-bottom: 32px;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
     .divider {
@@ -225,18 +231,22 @@
 
     .hero-date {
       font-family: 'ChangwonDangamRound', sans-serif;
-      font-size: 18px;
+      font-size: clamp(15px, 4.5vw, 18px);
       letter-spacing: 2px;
       color: rgba(255,255,255,0.88);
       margin-top: 20px;
       margin-bottom: 6px;
+      white-space: nowrap;
+      word-break: keep-all;
     }
 
     .hero-venue {
-      font-size: 13px;
+      font-size: clamp(11px, 3.5vw, 13px);
       color: rgba(255,255,255,0.65);
       letter-spacing: 1px;
       margin-bottom: 28px;
+      white-space: nowrap;
+      word-break: keep-all;
     }
 
     .countdown {
@@ -329,13 +339,14 @@
       margin-bottom: 6px;
       word-break: keep-all;
       overflow-wrap: break-word;
-      white-space: normal;
     }
 
     .fam-name {
       font-size: 20px;
       color: var(--gold-dk);
       letter-spacing: 4px;
+      white-space: nowrap;
+      word-break: keep-all;
     }
 
     .fam-divider {
@@ -563,9 +574,11 @@
     }
     .date-info strong,
     .date-info span {
-      font-size: 22px;
+      font-size: clamp(18px, 5vw, 22px);
       color: var(--gold-dk);
       letter-spacing: 1px;
+      white-space: nowrap;
+      word-break: keep-all;
     }
 
     .cal-save-btn {
