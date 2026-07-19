@@ -31,10 +31,44 @@
       font-display: swap;
     }
     /* ===== RESET ===== */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
-    html { scroll-behavior: auto; touch-action: manipulation; }
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    html {
+      scroll-behavior: auto;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
     html.smooth { scroll-behavior: smooth; }
-    body { touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+    body {
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      font-family: 'ChangwonDangamRound', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+      background: #e0dbd3;
+      color: var(--text-dk);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    input, button, textarea, select {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      font-family: inherit;
+    }
     img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
     a img, button img { pointer-events: auto; }
 
@@ -49,18 +83,6 @@
       --sage: #8fa889;
       --div: #e5ddd5;
       --white: #ffffff;
-    }
-
-    *, *:before, *:after {
-      touch-action: manipulation;
-    }
-
-    body {
-      font-family: 'ChangwonDangamRound', 'Malgun Gothic', sans-serif;
-      background: #e0dbd3;
-      color: var(--text-dk);
-      -webkit-font-smoothing: antialiased;
-      touch-action: manipulation;
     }
 
     .wrap {
