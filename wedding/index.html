@@ -36,30 +36,30 @@
       padding: 0;
       box-sizing: border-box;
       touch-action: manipulation;
-      -webkit-text-size-adjust: 100%;
-      -moz-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-      text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100% !important;
+      -moz-text-size-adjust: 100% !important;
+      -ms-text-size-adjust: 100% !important;
+      text-size-adjust: 100% !important;
       word-break: keep-all;
       overflow-wrap: break-word;
     }
     html {
       scroll-behavior: auto;
       touch-action: manipulation;
-      -webkit-text-size-adjust: 100%;
-      -moz-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-      text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100% !important;
+      -moz-text-size-adjust: 100% !important;
+      -ms-text-size-adjust: 100% !important;
+      text-size-adjust: 100% !important;
     }
     html.smooth { scroll-behavior: smooth; }
     body {
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
-      -webkit-text-size-adjust: 100%;
-      -moz-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-      text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100% !important;
+      -moz-text-size-adjust: 100% !important;
+      -ms-text-size-adjust: 100% !important;
+      text-size-adjust: 100% !important;
       font-family: 'ChangwonDangamRound', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
       background: #e0dbd3;
       color: var(--text-dk);
@@ -68,8 +68,8 @@
       word-break: keep-all;
     }
     input, button, textarea, select {
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100% !important;
+      text-size-adjust: 100% !important;
       font-family: inherit;
     }
     img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
@@ -209,20 +209,20 @@
     }
 
     .hero-names {
-      font-size: clamp(24px, 7.5vw, 34px);
+      font-size: 32px;
       font-weight: 300;
-      letter-spacing: clamp(3px, 1.5vw, 7px);
+      letter-spacing: 5px;
       margin-bottom: 4px;
       text-shadow: 0 2px 12px rgba(0,0,0,0.18);
       white-space: nowrap;
       word-break: keep-all;
     }
-    html[lang="en"] .hero-names { font-size: clamp(18px, 5.5vw, 24px); letter-spacing: 3px; text-transform: uppercase; white-space: nowrap; }
-    html[lang="zh-Hans"] .hero-names { font-size: clamp(20px, 6vw, 28px); letter-spacing: 4px; white-space: nowrap; }
+    html[lang="en"] .hero-names { font-size: 24px; letter-spacing: 3px; text-transform: uppercase; white-space: nowrap; }
+    html[lang="zh-Hans"] .hero-names { font-size: 28px; letter-spacing: 4px; white-space: nowrap; }
 
     .hero-heart {
-      font-size: clamp(14px, 4vw, 18px);
-      margin: 0 clamp(4px, 1vw, 8px);
+      font-size: 17px;
+      margin: 0 6px;
       color: var(--gold-lt);
       vertical-align: middle;
       position: relative;
@@ -231,7 +231,7 @@
 
     .hero-date {
       font-family: 'ChangwonDangamRound', sans-serif;
-      font-size: clamp(15px, 4.5vw, 18px);
+      font-size: 17px;
       letter-spacing: 2px;
       color: rgba(255,255,255,0.88);
       margin-top: 20px;
@@ -241,7 +241,7 @@
     }
 
     .hero-venue {
-      font-size: clamp(11px, 3.5vw, 13px);
+      font-size: 13px;
       color: rgba(255,255,255,0.65);
       letter-spacing: 1px;
       margin-bottom: 28px;
@@ -574,7 +574,7 @@
     }
     .date-info strong,
     .date-info span {
-      font-size: clamp(18px, 5vw, 22px);
+      font-size: 21px;
       color: var(--gold-dk);
       letter-spacing: 1px;
       white-space: nowrap;
