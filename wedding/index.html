@@ -41,6 +41,7 @@
       -moz-text-size-adjust: none !important;
       -ms-text-size-adjust: none !important;
       text-size-adjust: none !important;
+      -webkit-touch-callout: none !important;
       word-break: keep-all;
       overflow-wrap: break-word;
     }
@@ -52,12 +53,14 @@
       -moz-text-size-adjust: none !important;
       -ms-text-size-adjust: none !important;
       text-size-adjust: none !important;
+      -webkit-touch-callout: none !important;
     }
     html.smooth { scroll-behavior: smooth; }
     body {
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
+      -webkit-touch-callout: none !important;
       max-height: 1000000px;
       -webkit-text-size-adjust: none !important;
       -moz-text-size-adjust: none !important;
@@ -76,8 +79,11 @@
       text-size-adjust: none !important;
       font-family: inherit;
     }
-    img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
+    img { -webkit-user-drag: none; user-drag: none; pointer-events: none; -webkit-touch-callout: none !important; }
     a img, button img { pointer-events: auto; }
+    @media print {
+      html, body { display: none !important; }
+    }
 
     :root {
       --cream: #faf8f5;
@@ -2681,6 +2687,15 @@
 <div class="toast" id="toast"></div>
 
 <script>
+/* 캡처/복사 보안 방지 (우클릭, 드래그, 이미지 꾹 누르기 저장 차단) */
+document.addEventListener('contextmenu', function(e) { e.preventDefault(); }, false);
+document.addEventListener('dragstart', function(e) { e.preventDefault(); }, false);
+document.addEventListener('keyup', function(e) {
+  if (e.key === 'PrintScreen') {
+    try { navigator.clipboard.writeText(''); } catch(ex){}
+  }
+});
+
 /* ================================================
    CONFIG — 여기만 수정하면 됩니다
    ================================================ */
