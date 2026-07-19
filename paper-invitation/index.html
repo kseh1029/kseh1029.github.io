@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>종이 청첩장 시안 시뮬레이터 | 김승현 ♥ 김다솔</title>
+  <!-- Google Fonts 로드 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Great+Vibes&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- 왼쪽 설정 패널 -->
+    <aside class="sidebar no-print">
+      <header class="sidebar-header">
+        <h1>종이 청첩장 시안 메이커</h1>
+        <p>실제 규격에 맞춘 인쇄 시안 시뮬레이터</p>
+      </header>
+
+      <div class="sidebar-tabs">
+        <button class="tab-btn active" data-sidebar-tab="design">디자인 옵션</button>
+        <button class="tab-btn" data-sidebar-tab="content">텍스트 편집</button>
+      </div>
+
+      <!-- 디자인 옵션 탭 -->
+      <div class="tab-content active" id="tab-design">
+        <!-- 접지 유형 -->
+        <section class="settings-group">
+          <h3>1. 접지 및 규격 선택</h3>
+          <div class="control-row">
+            <label for="layout-type">접지 유형</label>
+            <select id="layout-type">
+              <option value="3fold-vertical" selected>세로 3단 접지 (인기)</option>
+              <option value="2fold-vertical">세로 2단 접지</option>
+              <option value="2fold-horizontal">가로 2단 접지</option>
+              <option value="2fold-mini">미니 명함형 2단 접지 (접었을 때 50x90 mm)</option>
+              <option value="3fold-mini">미니 명함형 3단 접지 (접었을 때 50x90 mm)</option>
+              <option value="postcard">엽서형 (양면)</option>
+            </select>
+          </div>
+          <div class="control-row">
+            <label for="paper-size">종이 규격 (단면 기준)</label>
+            <select id="paper-size">
+              <option value="size-standard" selected>기본 (접었을 때 100x150 mm)</option>
+              <option value="size-square">정사각형 (접었을 때 135x135 mm)</option>
+              <option value="size-long">슬림형 (접었을 때 95x205 mm)</option>
+            </select>
+          </div>
+          <div class="control-row checkbox-row">
+            <input type="checkbox" id="show-guidelines" checked>
+            <label for="show-guidelines">인쇄 가이드라인 표시 (접는 선, 재단선)</label>
+          </div>
+        </section>
+
+        <!-- 타이포그래피 설정 -->
+        <section class="settings-group">
+          <h3>2. 타이포그래피 (서체)</h3>
+          <div class="control-row">
+            <label for="font-family">기본 폰트</label>
+            <select id="font-family">
+              <option value="font-serif" selected>나눔명조 (고풍스럽고 우아함)</option>
+              <option value="font-sans">본고딕 (현대적이고 정갈함)</option>
+              <option value="font-classic">Cinzel + 명조 (유럽 클래식 감성)</option>
+              <option value="font-playfair">Playfair + 명조 (고급 잡지 감성)</option>
+            </select>
+          </div>
+          <div class="control-row">
+            <label for="letter-spacing">자간 (Letter Spacing)</label>
+            <div class="slider-container">
+              <input type="range" id="letter-spacing" min="-2" max="5" step="0.5" value="0.5">
+              <span class="value-display" id="val-letter-spacing">0.5px</span>
+            </div>
+          </div>
+          <div class="control-row">
+            <label for="line-height">행간 (Line Height)</label>
+            <div class="slider-container">
+              <input type="range" id="line-height" min="1.4" max="2.4" step="0.1" value="1.8">
+              <span class="value-display" id="val-line-height">1.8</span>
+            </div>
+          </div>
+          <div class="control-row">
+            <label for="text-align">본문 정렬</label>
+            <div class="btn-group">
+              <button class="btn-toggle active" data-align="center">중앙</button>
+              <button class="btn-toggle" data-align="left">좌측</button>
+              <button class="btn-toggle" data-align="right">우측</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 디자인 장식 및 디테일 -->
+        <section class="settings-group">
+          <h3>3. 디자인 장식 요소</h3>
+          <div class="control-row">
+            <label for="border-style">테두리 스타일</label>
+            <select id="border-style">
+              <option value="border-none" selected>없음 (심플함)</option>
+              <option value="border-thin">얇은 실선 테두리</option>
+              <option value="border-double">클래식 이중선 테두리</option>
+              <option value="border-corner">모서리 문양 테두리</option>
+            </select>
+          </div>
+          <div class="control-row">
+            <label for="divider-style">페이지 구분선/문양</label>
+            <select id="divider-style">
+              <option value="div-none">없음</option>
+              <option value="div-flower" selected>우아한 꽃/나뭇잎 일러스트</option>
+              <option value="div-line">심플한 포인트 라인</option>
+              <option value="div-dots">도트 라인</option>
+            </select>
+          </div>
+          <div class="control-row">
+            <label for="paper-color">종이 질감/색상</label>
+            <select id="paper-color">
+              <option value="color-ivory" selected>네추럴 아이보리 (자연스러운 백색)</option>
+              <option value="color-white">클린 화이트 (깨끗한 백색)</option>
+              <option value="color-gray">소프트 그레이 (차분하고 도시적인 그레이)</option>
+              <option value="color-pink">페일 핑크 (따뜻한 인디핑크)</option>
+            </select>
+          </div>
+        </section>
+      </div>
+
+      <!-- 텍스트 편집 탭 -->
+      <div class="tab-content" id="tab-content">
+        <section class="settings-group">
+          <h3>1. 표지 (Cover)</h3>
+          <div class="control-row">
+            <label for="cover-title">표지 메인 영어</label>
+            <input type="text" id="cover-title" value="The Wedding of">
+          </div>
+          <div class="control-row">
+            <label for="cover-names">표지 한글 이름</label>
+            <input type="text" id="cover-names" value="김승현 그리고 김다솔">
+          </div>
+          <div class="control-row">
+            <label for="cover-date">표지 예식일</label>
+            <input type="text" id="cover-date" value="2026. 10. 31 SATURDAY">
+          </div>
+          <div class="control-row checkbox-row">
+            <input type="checkbox" id="show-cover-illust" checked>
+            <label for="show-cover-illust">표지에 일러스트 그림 표시</label>
+          </div>
+        </section>
+
+        <section class="settings-group">
+          <h3>2. 인사말 (Greeting)</h3>
+          <div class="control-row">
+            <label for="greeting-title">소제목</label>
+            <input type="text" id="greeting-title" value="초대합니다">
+          </div>
+          <div class="control-row">
+            <label for="greeting-body">인사말 본문 (줄바꿈 반영)</label>
+            <textarea id="greeting-body" rows="8">가을이 깊어지는 계절에
+소중한 분들께 좋은 소식을 전합니다.
+함께하는 시간이 자연스럽고 편안한 사람과
+새로운 시작을 준비하게 되었습니다.
+
+앞으로의 날들도 이 계절처럼
+차분하고 따뜻하게
+두 사람이 함께 잘 채워가겠습니다.
+기쁜 날에 오셔서 축복해 주시면
+큰 기쁨이 되겠습니다.</textarea>
+          </div>
+        </section>
+
+        <section class="settings-group">
+          <h3>3. 신랑·신부 & 혼주</h3>
+          <div class="parent-info-editor">
+            <h4>신랑측</h4>
+            <div class="control-row compact">
+              <input type="text" id="groom-father" value="(故) 김창득">
+              <span>·</span>
+              <input type="text" id="groom-mother" value="이재숙">
+              <span class="relation-label">의 차남</span>
+              <input type="text" id="groom-name" value="승현" class="short-name">
+            </div>
+            <h4>신부측</h4>
+            <div class="control-row compact">
+              <input type="text" id="bride-father" value="김종문">
+              <span>·</span>
+              <input type="text" id="bride-mother" value="김명임">
+              <span class="relation-label">의 차녀</span>
+              <input type="text" id="bride-name" value="다솔" class="short-name">
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-group">
+          <h3>4. 예식 일시 및 장소</h3>
+          <div class="control-row">
+            <label for="wedding-datetime">일시 설명</label>
+            <input type="text" id="wedding-datetime" value="2026년 10월 31일 토요일 오후 5시">
+          </div>
+          <div class="control-row">
+            <label for="wedding-venue-name">식장 명</label>
+            <input type="text" id="wedding-venue-name" value="그랜드 모먼트 클래식홀 (지하 4층)">
+          </div>
+          <div class="control-row">
+            <label for="wedding-venue-addr">식장 주소</label>
+            <input type="text" id="wedding-venue-addr" value="부산광역시 남구 황령대로 401-9">
+          </div>
+          <div class="control-row checkbox-row">
+            <input type="checkbox" id="show-map" checked>
+            <label for="show-map">시안에 약도 이미지 포함</label>
+          </div>
+        </section>
+
+        <section class="settings-group">
+          <h3>5. 교통편 및 기타 안내</h3>
+          <div class="control-row">
+            <label for="trans-shuttle">셔틀버스 안내</label>
+            <textarea id="trans-shuttle" rows="3">지하철 2호선 남천역 4번 출구 앞 (대남교차로 방면 탑승)
+결혼식 당일 셔틀버스가 상시 운행됩니다. (매시간 5분, 20분, 35분, 50분)</textarea>
+          </div>
+          <div class="control-row">
+            <label for="trans-subway-bus">지하철/버스 안내</label>
+            <textarea id="trans-subway-bus" rows="3">지하철: 2호선 남천역 4번 출구에서 셔틀버스 이용
+시내버스: 38번, 583번 버스 승차 후 '동원 보라아파트 정류장' 하차</textarea>
+          </div>
+          <div class="control-row">
+            <label for="trans-car">자가용/주차 안내</label>
+            <textarea id="trans-car" rows="2">네비게이션: '그랜드 모먼트' 검색
+주차: 예식장 주차장 3시간 무료 주차 지원</textarea>
+          </div>
+        </section>
+      </div>
+
+      <!-- 하단 인쇄 및 안내 -->
+      <footer class="sidebar-footer">
+        <button id="btn-print" class="btn-primary">시안 인쇄 / PDF 저장 (A4 대응)</button>
+        <p class="print-tip">※ 인쇄 설정에서 <strong>'배경 그래픽 표시'</strong>를 체크하시고, 용지 방향을 <strong>'가로'</strong>로 설정해 주세요.</p>
+      </footer>
+    </aside>
+
+    <!-- 오른쪽 시안 미리보기 캔버스 -->
+    <main class="preview-area">
+      <!-- 캔버스 상단 탭 -->
+      <div class="preview-nav no-print">
+        <div class="view-modes">
+          <button class="view-btn active" data-view="flat-inside">안쪽 펼침면 (내지)</button>
+          <button class="view-btn" data-view="flat-outside">바깥쪽 펼침면 (외지/표지)</button>
+          <button class="view-btn" data-view="folding-3d">3D 접지 시뮬레이터 <span>Beta</span></button>
+        </div>
+        <div class="zoom-controls">
+          <button id="btn-zoom-out" title="축소">-</button>
+          <span id="zoom-value">100%</span>
+          <button id="btn-zoom-in" title="확대">+</button>
+        </div>
+      </div>
+
+      <!-- 실제 인쇄/시안 캔버스 -->
+      <div class="canvas-wrapper" id="canvas-wrapper">
+        
+        <!-- 2D 평면 펼침면 뷰 (안쪽면 / 바깥쪽면) -->
+        <div class="canvas-card-flat active" id="flat-viewer">
+          <!-- 가이드라인 오버레이 (Safe area, folds, trim) -->
+          <div class="canvas-guidelines" id="guidelines-overlay">
+            <div class="trim-line">재단선 (Trim Line)</div>
+            <div class="safe-zone-label">인쇄 안전 구역 (Safe Zone)</div>
+          </div>
+          
+          <!-- 카드 실제 패널 동적 생성 영역 (3단/2단에 따라 바뀜) -->
+          <div class="card-panels-container" id="panels-container">
+            <!-- JS로 동적으로 패널들이 추가됩니다 -->
+          </div>
+        </div>
+
+        <!-- 3D 접지 시뮬레이터 뷰 -->
+        <div class="canvas-card-3d" id="folding-3d-viewer">
+          <p class="instructions-3d no-print">마우스로 청첩장을 드래그하거나 아래 버튼을 눌러 접어보세요.</p>
+          <div class="scene-3d">
+            <div class="card-3d-model" id="card-3d">
+              <!-- JS로 3D 폴딩 카드를 동적 생성합니다 -->
+            </div>
+          </div>
+          <div class="controls-3d no-print">
+            <button id="btn-fold-close" class="btn-secondary">닫기 (접기)</button>
+            <button id="btn-fold-open" class="btn-secondary active">열기 (펼치기)</button>
+            <span class="fold-angle-desc">※ 드래그하여 청첩장을 회전할 수 있습니다.</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

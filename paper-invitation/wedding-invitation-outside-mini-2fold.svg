@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:serif="http://www.serif.com/" width="104mm" height="94mm" viewBox="0 0 104 94">
+  <defs>
+    <!-- 폰트 정의 및 폴백 스타일 -->
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&amp;family=Great+Vibes&amp;family=Noto+Serif+KR:wght@300;400;600&amp;family=Montserrat:wght@300;400;500;600&amp;display=swap');
+      .font-serif { font-family: 'Noto Serif KR', 'KoPub Batang', serif; font-weight: 300; }
+      .font-serif-bold { font-family: 'Noto Serif KR', 'KoPub Batang', serif; font-weight: 600; }
+      .font-cinzel { font-family: 'Cinzel', serif; }
+      .font-montserrat { font-family: 'Montserrat', sans-serif; }
+      .text-title { font-size: 2.2px; fill: #a1835d; letter-spacing: 0.8px; }
+      .text-body { font-size: 1.6px; fill: #333333; }
+      .text-small { font-size: 1.3px; fill: #666666; }
+      .guide-line { fill: none; stroke-width: 0.15; }
+    </style>
+  </defs>
+
+  <!-- Layer 1: Background -->
+  <g id="Background" serif:id="Background">
+    <rect x="0" y="0" width="104" height="94" fill="#FAF7F2" />
+  </g>
+
+  <!-- Layer 2: Ornaments & Borders -->
+  <g id="Ornaments" serif:id="Ornaments">
+    <!-- Wedding Day Highlight Circle (Gold fill) at Saturday 31st (Col 7, Row 5) -->
+    <!-- Columns: Sun=11.5, Mon=16.6, Tue=21.7, Wed=26.8, Thu=31.9, Fri=37.0, Sat=42.1 -->
+    <!-- Row 5: y=65. Circle center is at cy=64.3 -->
+    <circle cx="42.1" cy="64.3" r="3.2" fill="#c2a784" />
+  </g>
+
+  <!-- Layer 3: Typography & Images -->
+  <g id="Typography" serif:id="Typography">
+    <!-- LEFT PANEL: Back Cover - Calendar (x: 2 to 52, center: 27) -->
+    <!-- Month Title -->
+    <text class="font-serif-bold" font-size="3" fill="#333" text-anchor="middle" x="26.8" y="18" letter-spacing="0.5">2026년   10월</text>
+    
+    <!-- Weekdays Headers -->
+    <text class="font-serif-bold" font-size="1.6" fill="#db5c5c" text-anchor="middle" x="11.5" y="28">일</text>
+    <text class="font-serif" font-size="1.6" fill="#777" text-anchor="middle" x="16.6" y="28">월</text>
+    <text class="font-serif" font-size="1.6" fill="#777" text-anchor="middle" x="21.7" y="28">화</text>
+    <text class="font-serif" font-size="1.6" fill="#777" text-anchor="middle" x="26.8" y="28">수</text>
+    <text class="font-serif" font-size="1.6" fill="#777" text-anchor="middle" x="31.9" y="28">목</text>
+    <text class="font-serif" font-size="1.6" fill="#777" text-anchor="middle" x="37.0" y="28">금</text>
+    <text class="font-serif-bold" font-size="1.6" fill="#4a5bb8" text-anchor="middle" x="42.1" y="28">토</text>
+
+    <!-- Calendar Grid Dates -->
+    <!-- Row 1: y=37 -->
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="31.9" y="37">1</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="37.0" y="37">2</text>
+    <text class="font-serif-bold" font-size="1.6" fill="#4a5bb8" text-anchor="middle" x="42.1" y="37">3</text>
+
+    <!-- Row 2: y=44 -->
+    <text class="font-serif-bold" font-size="1.6" fill="#db5c5c" text-anchor="middle" x="11.5" y="44">4</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="16.6" y="44">5</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="21.7" y="44">6</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="26.8" y="44">7</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="31.9" y="44">8</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="37.0" y="44">9</text>
+    <text class="font-serif-bold" font-size="1.6" fill="#4a5bb8" text-anchor="middle" x="42.1" y="44">10</text>
+
+    <!-- Row 3: y=51 -->
+    <text class="font-serif-bold" font-size="1.6" fill="#db5c5c" text-anchor="middle" x="11.5" y="51">11</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="16.6" y="51">12</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="21.7" y="51">13</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="26.8" y="51">14</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="31.9" y="51">15</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="37.0" y="51">16</text>
+    <text class="font-serif-bold" font-size="1.6" fill="#4a5bb8" text-anchor="middle" x="42.1" y="51">17</text>
+
+    <!-- Row 4: y=58 -->
+    <text class="font-serif-bold" font-size="1.6" fill="#db5c5c" text-anchor="middle" x="11.5" y="58">18</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="16.6" y="58">19</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="21.7" y="58">20</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="26.8" y="58">21</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="31.9" y="58">22</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="37.0" y="58">23</text>
+    <text class="font-serif-bold" font-size="1.6" fill="#4a5bb8" text-anchor="middle" x="42.1" y="58">24</text>
+
+    <!-- Row 5: y=65 -->
+    <text class="font-serif-bold" font-size="1.6" fill="#db5c5c" text-anchor="middle" x="11.5" y="65">25</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="16.6" y="65">26</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="21.7" y="65">27</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="26.8" y="65">28</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="31.9" y="65">29</text>
+    <text class="font-serif" font-size="1.6" fill="#555" text-anchor="middle" x="37.0" y="65">30</text>
+    <!-- Highlighted wedding date (white text over gold circle) -->
+    <text class="font-serif-bold" font-size="1.6" fill="#ffffff" text-anchor="middle" x="42.1" y="65">31</text>
+
+
+    <!-- RIGHT PANEL: Front Cover (x: 52 to 102, center: 77) -->
+    <!-- Cover Illustration (Full Bleed on Top: width 50, height 72) -->
+    <g transform="translate(52, 2)">
+      <image href="wedding_cover_illust.jpg" x="0" y="0" width="50" height="72" preserveAspectRatio="xMidYMid slice" />
+    </g>
+
+    <!-- Titles & Names below the illustration -->
+    <text class="font-montserrat" font-size="1.5" font-weight="500" fill="#a1835d" text-anchor="middle" x="77" y="78.5" letter-spacing="1">OUR WEDDING DAY</text>
+    <text class="font-montserrat" font-size="1.5" font-weight="500" fill="#777777" text-anchor="middle" x="77" y="83" letter-spacing="0.5">2026. 10. 31 SAT</text>
+    <text class="font-montserrat" font-size="1.9" font-weight="600" fill="#3e2723" text-anchor="middle" x="77" y="87.5" letter-spacing="1">SEUNGHYUN &amp; DASOL</text>
+  </g>
+
+  <!-- Layer 4: Print Guidelines (Lock/Hide in Affinity Designer) -->
+  <g id="Guidelines" serif:id="Guidelines" opacity="0.8">
+    <!-- Red border for Document Trim Area (x: 2, y: 2, w: 100, h: 90) -->
+    <rect class="guide-line" x="2" y="2" width="100" height="90" stroke="#ff4d4d" stroke-dasharray="1 1" />
+    <text class="font-serif" font-size="1.2" fill="#ff4d4d" x="3" y="1.5">재단선 (Trim Line: 100 x 90 mm)</text>
+    
+    <!-- 2mm Outer Bleed boundary (x: 0, y: 0, w: 104, h: 94) -->
+    <rect class="guide-line" x="0.1" y="0.1" width="103.8" height="93.8" stroke="#ffb3b3" />
+    <text class="font-serif" font-size="1.2" fill="#ffb3b3" x="3" y="93">작업사이즈 외곽선 (Bleed Line: 104 x 94 mm)</text>
+
+    <!-- Blue lines for Safe Margin (x: 5, y: 5, panels: 50x90, 3mm padding within panels) -->
+    <!-- Panel 1 Safe area (x: 5 to 49, y: 5 to 89) -->
+    <rect class="guide-line" x="5" y="5" width="44" height="84" stroke="#3b82f6" stroke-dasharray="0.5 1" opacity="0.5" />
+    <!-- Panel 2 Safe area (x: 55 to 99, y: 5 to 89) -->
+    <rect class="guide-line" x="55" y="5" width="44" height="84" stroke="#3b82f6" stroke-dasharray="0.5 1" opacity="0.5" />
+    <text class="font-serif" font-size="1.2" fill="#3b82f6" x="56" y="1.5">안전영역선 (Safe Zone Margin: 3mm)</text>
+
+    <!-- Fold lines (x = 52) -->
+    <line class="guide-line" x1="52" y1="2" x2="52" y2="92" stroke="#a1835d" stroke-dasharray="2 1" />
+    <text class="font-serif" font-size="1.2" fill="#a1835d" x="53" y="91">접는선 (중앙 폴딩)</text>
+  </g>
+</svg>

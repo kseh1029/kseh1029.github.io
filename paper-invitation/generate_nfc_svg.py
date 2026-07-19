@@ -1,0 +1,119 @@
+import os
+
+# 1. Standard Gold NFC Symbol SVG
+nfc_svg_gold = '''<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 200 200">
+  <defs>
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&amp;display=swap');
+      .nfc-text {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 20px;
+        fill: #C2A784;
+        letter-spacing: 2px;
+      }
+      .nfc-stroke {
+        fill: none;
+        stroke: #C2A784;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+
+  <!-- Background Circle (Optional Light Tint) -->
+  <circle cx="100" cy="100" r="95" fill="#FAF8F5" />
+  
+  <!-- Outer Border Ring -->
+  <circle cx="100" cy="100" r="88" class="nfc-stroke" stroke-width="3.5" />
+  <circle cx="100" cy="100" r="81" class="nfc-stroke" stroke-width="1" stroke-dasharray="3 3" opacity="0.6" />
+
+  <!-- NFC Wireless Signal Waves (Top) -->
+  <g transform="translate(100, 50)">
+    <!-- Outer Wave -->
+    <path d="M -32,-8 C -20,-24 20,-24 32,-8" class="nfc-stroke" stroke-width="3" />
+    <!-- Middle Wave -->
+    <path d="M -22,2 C -12,-10 12,-10 22,2" class="nfc-stroke" stroke-width="3" />
+    <!-- Inner Wave -->
+    <path d="M -12,12 C -6,5 6,5 12,12" class="nfc-stroke" stroke-width="3" />
+  </g>
+
+  <!-- Smartphone & Hand Line Art (Center) -->
+  <g transform="translate(100, 105)">
+    <!-- Smartphone Frame -->
+    <rect x="-20" y="-30" width="40" height="65" rx="7" class="nfc-stroke" stroke-width="3.5" fill="#FAF8F5" />
+    
+    <!-- Smartphone Screen Inner Margin -->
+    <rect x="-16" y="-22" width="32" height="50" rx="3" class="nfc-stroke" stroke-width="1.2" opacity="0.7" />
+    
+    <!-- Top Speaker/Notch -->
+    <line x1="-8" y1="-26" x2="8" y2="-26" class="nfc-stroke" stroke-width="2" />
+    
+    <!-- Bottom Home Indicator/Button -->
+    <circle cx="0" cy="30" r="2" class="nfc-stroke" stroke-width="1" />
+
+    <!-- Hand Holding Smartphone Vector -->
+    <!-- Thumb finger (Right side holding corner) -->
+    <path d="M 20,5 C 28,5 34,12 32,22 C 30,30 24,32 18,30" class="nfc-stroke" stroke-width="3.2" fill="none" />
+    
+    <!-- Index / Palm grip line (Left side) -->
+    <path d="M -20,15 C -28,12 -34,18 -32,26 C -30,34 -22,38 -14,35" class="nfc-stroke" stroke-width="3.2" fill="none" />
+  </g>
+
+  <!-- NFC Text Label (Bottom) -->
+  <text text-anchor="middle" x="100" y="168" class="nfc-text">NFC</text>
+</svg>'''
+
+# 2. Black/Monochrome Universal Version
+nfc_svg_mono = '''<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 200 200">
+  <defs>
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&amp;display=swap');
+      .nfc-text-mono {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 20px;
+        fill: #222222;
+        letter-spacing: 2px;
+      }
+      .nfc-stroke-mono {
+        fill: none;
+        stroke: #222222;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    </style>
+  </defs>
+
+  <!-- Outer Border Ring -->
+  <circle cx="100" cy="100" r="88" class="nfc-stroke-mono" stroke-width="4" />
+
+  <!-- NFC Wireless Signal Waves (Top) -->
+  <g transform="translate(100, 50)">
+    <path d="M -32,-8 C -20,-24 20,-24 32,-8" class="nfc-stroke-mono" stroke-width="3.5" />
+    <path d="M -22,2 C -12,-10 12,-10 22,2" class="nfc-stroke-mono" stroke-width="3.5" />
+    <path d="M -12,12 C -6,5 6,5 12,12" class="nfc-stroke-mono" stroke-width="3.5" />
+  </g>
+
+  <!-- Smartphone & Hand Line Art (Center) -->
+  <g transform="translate(100, 105)">
+    <rect x="-20" y="-30" width="40" height="65" rx="7" class="nfc-stroke-mono" stroke-width="3.5" fill="#FFFFFF" />
+    <rect x="-16" y="-22" width="32" height="50" rx="3" class="nfc-stroke-mono" stroke-width="1.2" opacity="0.7" />
+    <line x1="-8" y1="-26" x2="8" y2="-26" class="nfc-stroke-mono" stroke-width="2" />
+    
+    <path d="M 20,5 C 28,5 34,12 32,22 C 30,30 24,32 18,30" class="nfc-stroke-mono" stroke-width="3.5" fill="none" />
+    <path d="M -20,15 C -28,12 -34,18 -32,26 C -30,34 -22,38 -14,35" class="nfc-stroke-mono" stroke-width="3.5" fill="none" />
+  </g>
+
+  <!-- NFC Text Label -->
+  <text text-anchor="middle" x="100" y="168" class="nfc-text-mono">NFC</text>
+</svg>'''
+
+base_dir = '/Users/Seunghyun/.gemini/antigravity/scratch/kseh1029.github.io/paper-invitation'
+with open(os.path.join(base_dir, 'nfc-symbol.svg'), 'w', encoding='utf-8') as f:
+    f.write(nfc_svg_gold)
+
+with open(os.path.join(base_dir, 'nfc-symbol-black.svg'), 'w', encoding='utf-8') as f:
+    f.write(nfc_svg_mono)
+
+print("NFC Symbol SVG files generated successfully!")
