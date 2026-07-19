@@ -63,6 +63,7 @@
       color: var(--text-dk);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      word-break: keep-all;
     }
     input, button, textarea, select {
       -webkit-text-size-adjust: 100%;
@@ -187,7 +188,7 @@
     .hero-body {
       position: relative;
       z-index: 1;
-      padding: 0 28px 52px;
+      padding: 0 16px 52px;
       color: white;
       text-align: center;
     }
@@ -202,18 +203,20 @@
     }
 
     .hero-names {
-      font-size: 38px;
+      font-size: clamp(24px, 7.5vw, 34px);
       font-weight: 300;
-      letter-spacing: 10px;
+      letter-spacing: clamp(3px, 1.5vw, 7px);
       margin-bottom: 4px;
       text-shadow: 0 2px 12px rgba(0,0,0,0.18);
+      white-space: nowrap;
+      word-break: keep-all;
     }
-    html[lang="en"] .hero-names { font-size: 26px; letter-spacing: 4px; text-transform: uppercase; }
-    html[lang="zh-Hans"] .hero-names { font-size: 30px; letter-spacing: 6px; }
+    html[lang="en"] .hero-names { font-size: clamp(18px, 5.5vw, 24px); letter-spacing: 3px; text-transform: uppercase; white-space: nowrap; }
+    html[lang="zh-Hans"] .hero-names { font-size: clamp(20px, 6vw, 28px); letter-spacing: 4px; white-space: nowrap; }
 
     .hero-heart {
-      font-size: 19px;
-      margin: 0 10px;
+      font-size: clamp(14px, 4vw, 18px);
+      margin: 0 clamp(4px, 1vw, 8px);
       color: var(--gold-lt);
       vertical-align: middle;
       position: relative;
