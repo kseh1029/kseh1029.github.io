@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#faf8f5">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="favicon.svg">
@@ -36,30 +36,33 @@
       padding: 0;
       box-sizing: border-box;
       touch-action: manipulation;
-      -webkit-text-size-adjust: 100% !important;
-      -moz-text-size-adjust: 100% !important;
-      -ms-text-size-adjust: 100% !important;
-      text-size-adjust: 100% !important;
+      max-height: 1000000px;
+      -webkit-text-size-adjust: none !important;
+      -moz-text-size-adjust: none !important;
+      -ms-text-size-adjust: none !important;
+      text-size-adjust: none !important;
       word-break: keep-all;
       overflow-wrap: break-word;
     }
     html {
       scroll-behavior: auto;
       touch-action: manipulation;
-      -webkit-text-size-adjust: 100% !important;
-      -moz-text-size-adjust: 100% !important;
-      -ms-text-size-adjust: 100% !important;
-      text-size-adjust: 100% !important;
+      max-height: 1000000px;
+      -webkit-text-size-adjust: none !important;
+      -moz-text-size-adjust: none !important;
+      -ms-text-size-adjust: none !important;
+      text-size-adjust: none !important;
     }
     html.smooth { scroll-behavior: smooth; }
     body {
       touch-action: manipulation;
       user-select: none;
       -webkit-user-select: none;
-      -webkit-text-size-adjust: 100% !important;
-      -moz-text-size-adjust: 100% !important;
-      -ms-text-size-adjust: 100% !important;
-      text-size-adjust: 100% !important;
+      max-height: 1000000px;
+      -webkit-text-size-adjust: none !important;
+      -moz-text-size-adjust: none !important;
+      -ms-text-size-adjust: none !important;
+      text-size-adjust: none !important;
       font-family: 'ChangwonDangamRound', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
       background: #e0dbd3;
       color: var(--text-dk);
@@ -68,8 +71,9 @@
       word-break: keep-all;
     }
     input, button, textarea, select {
-      -webkit-text-size-adjust: 100% !important;
-      text-size-adjust: 100% !important;
+      max-height: 1000000px;
+      -webkit-text-size-adjust: none !important;
+      text-size-adjust: none !important;
       font-family: inherit;
     }
     img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
