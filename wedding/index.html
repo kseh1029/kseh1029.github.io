@@ -961,8 +961,8 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
-    .acc-who { font-size: 13px; color: var(--text-lt); margin-bottom: 3px; }
-    .acc-bank { font-size: 14px; font-weight: 600; color: var(--text-dk); margin-bottom: 2px; }
+    .acc-who { font-size: 13px; font-weight: 600; color: var(--text-dk); margin-bottom: 3px; }
+    .acc-bank { font-size: 14px; font-weight: normal; color: var(--text-lt); margin-bottom: 2px; }
     .acc-num { font-size: 13px; color: var(--text-md); letter-spacing: 1px; margin-bottom: 10px; font-family: 'ChangwonDangamRound', sans-serif; }
 
     .copy-btn {
@@ -2364,6 +2364,14 @@
       <!-- 신랑 -->
       <div>
         <div class="acc-col-cards">
+          <!-- 신랑 어머니 -->
+          <div class="acc-card">
+            <p class="acc-who" data-i18n="acc_who_groom_mom">신랑 어머니 &nbsp;이재숙</p>
+            <p class="acc-bank" data-i18n="bank_groom_mom">국민은행</p>
+            <p class="acc-num" data-i18n="acc_num_groom_mom">계좌번호 등록 필요</p>
+            <button class="copy-btn" onclick="copyAcc(this,'계좌번호 등록 필요')" data-i18n="copy_btn_2">📋 복사</button>
+          </div>
+          <!-- 신랑 -->
           <div class="acc-card">
             <p class="acc-who" data-i18n="acc_who_groom">신랑 &nbsp;김승현</p>
             <p class="acc-bank" data-i18n="bank_shinhan">신한은행</p>
@@ -2377,6 +2385,21 @@
       <!-- 신부 -->
       <div>
         <div class="acc-col-cards">
+          <!-- 신부 아버지 -->
+          <div class="acc-card">
+            <p class="acc-who" data-i18n="acc_who_bride_dad">신부 아버지 &nbsp;김종문</p>
+            <p class="acc-bank" data-i18n="bank_bride_dad">국민은행</p>
+            <p class="acc-num" data-i18n="acc_num_bride_dad">계좌번호 등록 필요</p>
+            <button class="copy-btn" onclick="copyAcc(this,'계좌번호 등록 필요')" data-i18n="copy_btn_4">📋 복사</button>
+          </div>
+          <!-- 신부 어머니 -->
+          <div class="acc-card">
+            <p class="acc-who" data-i18n="acc_who_bride_mom">신부 어머니 &nbsp;김명임</p>
+            <p class="acc-bank" data-i18n="bank_bride_mom">국민은행</p>
+            <p class="acc-num" data-i18n="acc_num_bride_mom">계좌번호 등록 필요</p>
+            <button class="copy-btn" onclick="copyAcc(this,'계좌번호 등록 필요')" data-i18n="copy_btn_5">📋 복사</button>
+          </div>
+          <!-- 신부 -->
           <div class="acc-card">
             <p class="acc-who" data-i18n="acc_who_bride">신부 &nbsp;김다솔</p>
             <p class="acc-bank" data-i18n="bank_kb">KB국민은행</p>
@@ -3441,6 +3464,12 @@ var _i18n = {
     acc_groom_side: '신랑측',
     acc_bride_side: '신부측',
     bank_shinhan: '신한은행', bank_kb: 'KB국민은행',
+    bank_groom_mom: '국민은행',
+    acc_num_groom_mom: '계좌번호 등록 필요',
+    bank_bride_dad: '국민은행',
+    acc_num_bride_dad: '계좌번호 등록 필요',
+    bank_bride_mom: '국민은행',
+    acc_num_bride_mom: '계좌번호 등록 필요',
     acc_who_groom: '신랑 &nbsp;김승현',
     acc_who_groom_mom: '신랑 어머니 &nbsp;이재숙',
     acc_who_bride: '신부 &nbsp;김다솔',
@@ -3585,6 +3614,12 @@ var _i18n = {
     acc_groom_side: 'Groom\'s Side',
     acc_bride_side: 'Bride\'s Side',
     bank_shinhan: 'Shinhan Bank', bank_kb: 'KB Kookmin Bank',
+    bank_groom_mom: 'KB Kookmin Bank',
+    acc_num_groom_mom: 'Account registration needed',
+    bank_bride_dad: 'KB Kookmin Bank',
+    acc_num_bride_dad: 'Account registration needed',
+    bank_bride_mom: 'KB Kookmin Bank',
+    acc_num_bride_mom: 'Account registration needed',
     acc_who_groom: 'Seunghyun Kim (Groom)',
     acc_who_groom_mom: 'Jaesook Lee (Groom\'s Mother)',
     acc_who_bride: 'Dasol Kim (Bride)',
@@ -3729,6 +3764,12 @@ var _i18n = {
     acc_groom_side: '新郎家',
     acc_bride_side: '新娘家',
     bank_shinhan: '新韩银行', bank_kb: 'KB国民银行',
+    bank_groom_mom: 'KB国民银行',
+    acc_num_groom_mom: '需登记账号',
+    bank_bride_dad: 'KB国民银行',
+    acc_num_bride_dad: '需登记账号',
+    bank_bride_mom: 'KB国民银行',
+    acc_num_bride_mom: '需登记账号',
     acc_who_groom: '新郎 金承賢',
     acc_who_groom_mom: '新郎母亲 李在淑',
     acc_who_bride: '新娘 金茶率',
