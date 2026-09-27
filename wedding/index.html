@@ -863,7 +863,6 @@
       position: relative;
       padding-left: 20px;
     }
-    }
     .ceremony-body .ceremony-list::before {
       content: '';
       position: absolute;
@@ -914,27 +913,52 @@
       font-weight: 600;
     }
 
-    /* ===== ACCOUNT ===== */
-    #account {}
+    /* ===== ACCOUNT (TOGGLE) ===== */
+    #account {
+      padding: 0;
+    }
 
-    .acc-tabs {
+    .account-toggle {
+      width: 100%;
       display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .acc-tab-btn {
-      padding: 8px 20px;
-      border: 1.5px solid var(--div);
-      border-radius: 20px;
-      background: white;
-      font-family: 'ChangwonDangamRound', sans-serif;
-      font-size: 13px;
-      color: var(--text-md);
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 28px 36px;
+      background: none;
+      border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      font-family: 'ChangwonDangamRound', sans-serif;
     }
-    .acc-tab-btn.on { border-color: var(--gold); background: var(--gold); color: white; }
+    .account-toggle .section-title {
+      margin-bottom: 12px;
+    }
+    .account-hint {
+      font-size: 13px;
+      color: var(--text-lt);
+      font-family: 'ChangwonDangamRound', sans-serif;
+      letter-spacing: 0.05em;
+      margin-bottom: 0;
+    }
+    .account-arrow {
+      font-size: 13px;
+      color: var(--text-lt);
+      margin-top: 10px;
+      transition: transform 0.3s;
+    }
+    .account-arrow.open {
+      transform: rotate(180deg);
+    }
+    .account-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .account-body.open {
+      max-height: 1200px;
+    }
+    .account-content {
+      padding: 0 24px 48px;
+    }
 
     .acc-cols {
       display: grid;
@@ -2357,56 +2381,64 @@
 
   <!-- ───────────────── ACCOUNT ───────────────── -->
   <section id="account" class="fi">
-    <p class="section-label">Gift</p>
-    <p class="section-title" data-i18n="gift_title">마음 전하기</p>
+    <button class="account-toggle" onclick="toggleAccount()" id="accountToggleBtn">
+      <p class="section-label">Gift</p>
+      <p class="section-title" data-i18n="gift_title">마음 전하기</p>
+      <p class="account-hint" data-i18n="gift_hint">터치하시면 계좌번호를 확인하실 수 있어요</p>
+      <span class="account-arrow" id="accountArrow">▼</span>
+    </button>
 
-    <div class="acc-cols">
-      <!-- 신랑 -->
-      <div>
-        <div class="acc-col-cards">
-          <!-- 신랑 어머니 -->
-          <div class="acc-card">
-            <p class="acc-who" data-i18n="acc_who_groom_mom">신랑 어머니 &nbsp;이재숙</p>
-            <p class="acc-bank" data-i18n="bank_groom_mom">IM뱅크</p>
-            <p class="acc-num" data-i18n="acc_num_groom_mom">030-08-344598</p>
-            <button class="copy-btn" onclick="copyAcc(this,'030-08-344598')" data-i18n="copy_btn_2">📋 복사</button>
-          </div>
+    <div class="account-body" id="accountBody">
+      <div class="account-content">
+        <div class="acc-cols">
           <!-- 신랑 -->
-          <div class="acc-card">
-            <p class="acc-who" data-i18n="acc_who_groom">신랑 &nbsp;김승현</p>
-            <p class="acc-bank" data-i18n="bank_shinhan">신한은행</p>
-            <p class="acc-num">110-593-292760</p>
-            <button class="copy-btn" onclick="copyAcc(this,'110-593-292760')" data-i18n="copy_btn_1">📋 복사</button>
-            <a class="kakao-btn" href="https://qr.kakaopay.com/Ej8p3Kagy" target="_blank" data-i18n="kakao_btn">카카오톡 송금</a>
-            <a class="toss-btn" href="supertoss://send?amount=0&bank=%EC%8B%A0%ED%95%9C%EC%9D%80%ED%96%89&accountNo=110593292760&origin=qr" data-i18n="toss_btn">토스 송금</a>
-          </div>
-        </div>
-      </div>
-      <!-- 신부 -->
-      <div>
-        <div class="acc-col-cards">
-          <!-- 신부 아버지 -->
-          <div class="acc-card">
-            <p class="acc-who" data-i18n="acc_who_bride_dad">신부 아버지 &nbsp;김종문</p>
-            <p class="acc-bank" data-i18n="bank_bride_dad">토스뱅크</p>
-            <p class="acc-num" data-i18n="acc_num_bride_dad">1002-4492-5009</p>
-            <button class="copy-btn" onclick="copyAcc(this,'1002-4492-5009')" data-i18n="copy_btn_4">📋 복사</button>
-          </div>
-          <!-- 신부 어머니 -->
-          <div class="acc-card">
-            <p class="acc-who" data-i18n="acc_who_bride_mom">신부 어머니 &nbsp;김명임</p>
-            <p class="acc-bank" data-i18n="bank_bride_mom">NH농협은행</p>
-            <p class="acc-num" data-i18n="acc_num_bride_mom">302-1041-832921</p>
-            <button class="copy-btn" onclick="copyAcc(this,'302-1041-832921')" data-i18n="copy_btn_5">📋 복사</button>
+          <div>
+            <div class="acc-col-cards">
+              <!-- 신랑 어머니 -->
+              <div class="acc-card">
+                <p class="acc-who" data-i18n="acc_who_groom_mom">신랑 어머니 &nbsp;이재숙</p>
+                <p class="acc-bank" data-i18n="bank_groom_mom">IM뱅크</p>
+                <p class="acc-num" data-i18n="acc_num_groom_mom">030-08-344598</p>
+                <button class="copy-btn" onclick="copyAcc(this,'030-08-344598')" data-i18n="copy_btn_2">📋 복사</button>
+              </div>
+              <!-- 신랑 -->
+              <div class="acc-card">
+                <p class="acc-who" data-i18n="acc_who_groom">신랑 &nbsp;김승현</p>
+                <p class="acc-bank" data-i18n="bank_shinhan">신한은행</p>
+                <p class="acc-num">110-593-292760</p>
+                <button class="copy-btn" onclick="copyAcc(this,'110-593-292760')" data-i18n="copy_btn_1">📋 복사</button>
+                <a class="kakao-btn" href="https://qr.kakaopay.com/Ej8p3Kagy" target="_blank" data-i18n="kakao_btn">카카오톡 송금</a>
+                <a class="toss-btn" href="supertoss://send?amount=0&bank=%EC%8B%A0%ED%95%9C%EC%9D%80%ED%96%89&accountNo=110593292760&origin=qr" data-i18n="toss_btn">토스 송금</a>
+              </div>
+            </div>
           </div>
           <!-- 신부 -->
-          <div class="acc-card">
-            <p class="acc-who" data-i18n="acc_who_bride">신부 &nbsp;김다솔</p>
-            <p class="acc-bank" data-i18n="bank_kb">KB국민은행</p>
-            <p class="acc-num">655602-04-231589</p>
-            <button class="copy-btn" onclick="copyAcc(this,'655602-04-231589')" data-i18n="copy_btn_3">📋 복사</button>
-            <a class="kakao-btn" href="https://qr.kakaopay.com/FDsqorDsT" target="_blank" data-i18n="kakao_btn">카카오톡 송금</a>
-            <a class="alipay-btn" href="https://qr.alipay.com/fkx11223grrovdjugz2sz92" target="_blank" data-i18n="alipay_btn">Alipay 송금</a>
+          <div>
+            <div class="acc-col-cards">
+              <!-- 신부 아버지 -->
+              <div class="acc-card">
+                <p class="acc-who" data-i18n="acc_who_bride_dad">신부 아버지 &nbsp;김종문</p>
+                <p class="acc-bank" data-i18n="bank_bride_dad">토스뱅크</p>
+                <p class="acc-num" data-i18n="acc_num_bride_dad">1002-4492-5009</p>
+                <button class="copy-btn" onclick="copyAcc(this,'1002-4492-5009')" data-i18n="copy_btn_4">📋 복사</button>
+              </div>
+              <!-- 신부 어머니 -->
+              <div class="acc-card">
+                <p class="acc-who" data-i18n="acc_who_bride_mom">신부 어머니 &nbsp;김명임</p>
+                <p class="acc-bank" data-i18n="bank_bride_mom">NH농협은행</p>
+                <p class="acc-num" data-i18n="acc_num_bride_mom">302-1041-832921</p>
+                <button class="copy-btn" onclick="copyAcc(this,'302-1041-832921')" data-i18n="copy_btn_5">📋 복사</button>
+              </div>
+              <!-- 신부 -->
+              <div class="acc-card">
+                <p class="acc-who" data-i18n="acc_who_bride">신부 &nbsp;김다솔</p>
+                <p class="acc-bank" data-i18n="bank_kb">KB국민은행</p>
+                <p class="acc-num">655602-04-231589</p>
+                <button class="copy-btn" onclick="copyAcc(this,'655602-04-231589')" data-i18n="copy_btn_3">📋 복사</button>
+                <a class="kakao-btn" href="https://qr.kakaopay.com/FDsqorDsT" target="_blank" data-i18n="kakao_btn">카카오톡 송금</a>
+                <a class="alipay-btn" href="https://qr.alipay.com/fkx11223grrovdjugz2sz92" target="_blank" data-i18n="alipay_btn">Alipay 송금</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2689,7 +2721,7 @@
   <a class="bnav-item on" href="#hero"><span class="bnav-icon">💐</span><span data-i18n="nav_wedding">홈</span></a>
   <a class="bnav-item" href="#gallery"><span class="bnav-icon">🖼️</span><span data-i18n="nav_gallery">갤러리</span></a>
   <a class="bnav-item" href="#location"><span class="bnav-icon">📍</span><span data-i18n="nav_directions">오시는길</span></a>
-  <a class="bnav-item" href="#account"><span class="bnav-icon">💝</span><span data-i18n="nav_gift">마음</span></a>
+  <a class="bnav-item" href="#account" onclick="toggleAccount(true)"><span class="bnav-icon">💝</span><span data-i18n="nav_gift">마음</span></a>
   <a class="bnav-item" href="#nearby"><span class="bnav-icon">🏖️</span><span data-i18n="nav_around">주변</span></a>
 </nav>
 
@@ -2894,6 +2926,18 @@ function toggleCeremony() {
   const arrow = document.getElementById('ceremonyArrow');
   body.classList.toggle('open');
   arrow.classList.toggle('open');
+}
+
+function toggleAccount(openOnly = false) {
+  const body  = document.getElementById('accountBody');
+  const arrow = document.getElementById('accountArrow');
+  if (openOnly) {
+    body.classList.add('open');
+    arrow.classList.add('open');
+  } else {
+    body.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
 }
 
 function toggleGallery() {
@@ -3461,6 +3505,7 @@ var _i18n = {
     cer_5: '혼인 서약 및 성혼 선언', cer_6: '주례사', cer_7: '축가',
     cer_8: '폐식 선언', cer_9: '기념 촬영', cer_10: '피로연 (뷔페)',
     gift_title: '마음 전하기',
+    gift_hint: '터치하시면 계좌번호를 확인하실 수 있어요',
     acc_groom_side: '신랑측',
     acc_bride_side: '신부측',
     bank_shinhan: '신한은행', bank_kb: 'KB국민은행',
@@ -3611,6 +3656,7 @@ var _i18n = {
     cer_5: 'Wedding Vows & Declaration of Marriage', cer_6: 'Officiant\'s Message', cer_7: 'Congratulatory Song',
     cer_8: 'Closing Remarks', cer_9: 'Commemorative Photo', cer_10: 'Reception (Buffet)',
     gift_title: 'Gift',
+    gift_hint: 'Tap to view bank accounts',
     acc_groom_side: 'Groom\'s Side',
     acc_bride_side: 'Bride\'s Side',
     bank_shinhan: 'Shinhan Bank', bank_kb: 'KB Kookmin Bank',
@@ -3761,6 +3807,7 @@ var _i18n = {
     cer_5: '婚姻誓言及成婚宣言', cer_6: '主礼致辞', cer_7: '祝贺歌曲',
     cer_8: '闭幕宣言', cer_9: '纪念合影', cer_10: '招待宴（自助餐）',
     gift_title: '祝贺礼金',
+    gift_hint: '点击查看礼金账号',
     acc_groom_side: '新郎家',
     acc_bride_side: '新娘家',
     bank_shinhan: '新韩银行', bank_kb: 'KB国民银行',
