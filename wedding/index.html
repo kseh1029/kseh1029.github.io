@@ -49,6 +49,7 @@
       scroll-behavior: auto;
       touch-action: manipulation;
       max-height: 1000000px;
+      overflow-anchor: none;
       -webkit-text-size-adjust: none !important;
       -moz-text-size-adjust: none !important;
       -ms-text-size-adjust: none !important;
@@ -62,6 +63,7 @@
       -webkit-user-select: none;
       -webkit-touch-callout: none !important;
       max-height: 1000000px;
+      overflow-anchor: none;
       -webkit-text-size-adjust: none !important;
       -moz-text-size-adjust: none !important;
       -ms-text-size-adjust: none !important;
@@ -226,9 +228,11 @@
       text-shadow: 0 2px 12px rgba(0,0,0,0.18);
       white-space: nowrap;
       word-break: keep-all;
+      min-height: 40px;
+      line-height: 40px;
     }
-    html[lang="en"] .hero-names { font-size: 25px; letter-spacing: 3px; text-transform: uppercase; white-space: nowrap; }
-    html[lang="zh-Hans"] .hero-names { font-size: 28px; letter-spacing: 4px; white-space: nowrap; }
+    html[lang="en"] .hero-names { font-size: 25px; letter-spacing: 3px; text-transform: uppercase; white-space: nowrap; min-height: 40px; line-height: 40px; }
+    html[lang="zh-Hans"] .hero-names { font-size: 28px; letter-spacing: 4px; white-space: nowrap; min-height: 40px; line-height: 40px; }
 
     .hero-heart {
       font-size: 18px;
@@ -248,6 +252,8 @@
       margin-bottom: 6px;
       white-space: nowrap;
       word-break: keep-all;
+      min-height: 24px;
+      line-height: 24px;
     }
 
     .hero-venue {
@@ -257,6 +263,8 @@
       margin-bottom: 28px;
       white-space: nowrap;
       word-break: keep-all;
+      min-height: 20px;
+      line-height: 20px;
     }
 
     .countdown {
@@ -2541,27 +2549,22 @@
         <div class="ceremony-item">
           <div class="ceremony-dot"></div>
           <span class="ceremony-num">6</span>
-          <span class="ceremony-name" data-i18n="cer_6">주례사</span>
+          <span class="ceremony-name" data-i18n="cer_6">축가</span>
         </div>
         <div class="ceremony-item">
           <div class="ceremony-dot"></div>
           <span class="ceremony-num">7</span>
-          <span class="ceremony-name" data-i18n="cer_7">축가</span>
+          <span class="ceremony-name" data-i18n="cer_7">폐식 선언</span>
         </div>
         <div class="ceremony-item">
           <div class="ceremony-dot"></div>
           <span class="ceremony-num">8</span>
-          <span class="ceremony-name" data-i18n="cer_8">폐식 선언</span>
+          <span class="ceremony-name" data-i18n="cer_8">기념 촬영</span>
         </div>
         <div class="ceremony-item">
           <div class="ceremony-dot"></div>
           <span class="ceremony-num">9</span>
-          <span class="ceremony-name" data-i18n="cer_9">기념 촬영</span>
-        </div>
-        <div class="ceremony-item">
-          <div class="ceremony-dot"></div>
-          <span class="ceremony-num">10</span>
-          <span class="ceremony-name" data-i18n="cer_10">피로연 (뷔페)</span>
+          <span class="ceremony-name" data-i18n="cer_9">피로연 (뷔페)</span>
         </div>
       </div>
     </div>
@@ -3502,8 +3505,8 @@ var _i18n = {
     air_step4_sub: '시내버스 탑승 시 — 583번 승차 → 동원 보라아파트 정류장 하차',
     cer_title: '식 순',  cer_hint: '터치하시면 식순을 확인하실 수 있어요',
     cer_1: '개식사', cer_2: '화촉 점화', cer_3: '신랑 입장', cer_4: '신부 입장',
-    cer_5: '혼인 서약 및 성혼 선언', cer_6: '주례사', cer_7: '축가',
-    cer_8: '폐식 선언', cer_9: '기념 촬영', cer_10: '피로연 (뷔페)',
+    cer_5: '혼인 서약 및 성혼 선언', cer_6: '축가', cer_7: '폐식 선언',
+    cer_8: '기념 촬영', cer_9: '피로연 (뷔페)',
     gift_title: '마음 전하기',
     gift_hint: '터치하시면 계좌번호를 확인하실 수 있어요',
     acc_groom_side: '신랑측',
@@ -3653,8 +3656,8 @@ var _i18n = {
     air_step4_sub: 'Or take Bus 583 → get off at Dongwon Bora Apt stop',
     cer_title: 'Order of Ceremony',  cer_hint: 'View Ceremony Schedule',
     cer_1: 'Opening Remarks', cer_2: 'Lighting of Unity Candle', cer_3: 'Groom\'s Entrance', cer_4: 'Bride\'s Entrance',
-    cer_5: 'Wedding Vows & Declaration of Marriage', cer_6: 'Officiant\'s Message', cer_7: 'Congratulatory Song',
-    cer_8: 'Closing Remarks', cer_9: 'Commemorative Photo', cer_10: 'Reception (Buffet)',
+    cer_5: 'Wedding Vows & Declaration of Marriage', cer_6: 'Congratulatory Song',
+    cer_7: 'Closing Remarks', cer_8: 'Commemorative Photo', cer_9: 'Reception (Buffet)',
     gift_title: 'Gift',
     gift_hint: 'Tap to view bank accounts',
     acc_groom_side: 'Groom\'s Side',
@@ -3804,8 +3807,8 @@ var _i18n = {
     air_step4_sub: '或乘583路公交 → 在东原菠萝公寓站下车',
     cer_title: '婚礼流程',  cer_hint: '查看婚礼流程',
     cer_1: '开场致辞', cer_2: '点燃婚礼蜡烛', cer_3: '新郎入场', cer_4: '新娘入场',
-    cer_5: '婚姻誓言及成婚宣言', cer_6: '主礼致辞', cer_7: '祝贺歌曲',
-    cer_8: '闭幕宣言', cer_9: '纪念合影', cer_10: '招待宴（自助餐）',
+    cer_5: '婚姻誓言及成婚宣言', cer_6: '祝贺歌曲',
+    cer_7: '闭幕宣言', cer_8: '纪念合影', cer_9: '招待宴（自助餐）',
     gift_title: '祝贺礼金',
     gift_hint: '点击查看礼金账号',
     acc_groom_side: '新郎家',
@@ -3901,9 +3904,33 @@ document.addEventListener('click', function(e) {
   }
 });
 function setLang(lang) {
+  const html = document.documentElement;
+  const hadSmooth = html.classList.contains('smooth');
+  html.classList.remove('smooth');
+  html.style.scrollBehavior = 'auto';
+
+  if (document.activeElement && document.activeElement.blur) {
+    document.activeElement.blur();
+  }
+
+  const scrollYBefore = window.scrollY;
+  let anchorEl = null;
+  let anchorOffset = 0;
+  if (scrollYBefore > 50) {
+    const sections = document.querySelectorAll('section');
+    for (let i = 0; i < sections.length; i++) {
+      const rect = sections[i].getBoundingClientRect();
+      if (rect.top <= 120 && rect.bottom > 120) {
+        anchorEl = sections[i];
+        anchorOffset = rect.top;
+        break;
+      }
+    }
+  }
+
   _lang = lang;
   localStorage.setItem('wlang', lang);
-  document.documentElement.lang = lang === 'zh' ? 'zh-Hans' : lang;
+  html.lang = lang === 'zh' ? 'zh-Hans' : lang;
   const btn = document.getElementById('langBtn');
   if (btn) btn.textContent = _langFlag[lang];
   document.querySelectorAll('.lang-option').forEach(el => {
@@ -3921,6 +3948,22 @@ function setLang(lang) {
     }
   });
   updateCountdown();
+
+  if (scrollYBefore <= 50) {
+    window.scrollTo(0, 0);
+  } else if (anchorEl) {
+    const newRect = anchorEl.getBoundingClientRect();
+    window.scrollBy(0, newRect.top - anchorOffset);
+  }
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      if (hadSmooth) {
+        html.classList.add('smooth');
+        html.style.scrollBehavior = '';
+      }
+    });
+  });
 }
 
 /* 캘린더 저장 (.ics) */
