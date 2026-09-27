@@ -284,7 +284,7 @@
     }
     .cnt-item + .cnt-item { border-left: 1px solid rgba(255,255,255,0.2); }
 
-    .cnt-num {
+    .countdown .cnt-num {
       display: block;
       font-family: 'ChangwonDangamRound', sans-serif;
       font-size: 34px;
@@ -1058,26 +1058,31 @@
     }
     .alipay-btn:active { background: #0e5fd8; }
 
-    .toss-btn {
+    .toss-btn,
+    .toss-btn:link,
+    .toss-btn:visited,
+    .toss-btn:hover,
+    .toss-btn:focus {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 5px;
       width: 100%;
       padding: 9px 6px;
-      background: #0064FF;
+      background: #0064FF !important;
       border: none;
       border-radius: 8px;
       font-family: 'ChangwonDangamRound', sans-serif;
       font-size: 13px;
-      color: white;
+      color: #ffffff !important;
       font-weight: 600;
       cursor: pointer;
-      text-decoration: none;
+      text-decoration: none !important;
       margin-top: 5px;
       transition: background 0.2s;
+      -webkit-tap-highlight-color: transparent;
     }
-    .toss-btn:active { background: #0050cc; }
+    .toss-btn:active { background: #0050cc !important; color: #ffffff !important; }
 
     /* ===== RSVP ===== */
     #rsvp { background: linear-gradient(160deg, #f8f5f0 0%, #f2ead8 100%); }
@@ -1170,15 +1175,20 @@
     }
     .cnt-btn:active { background: var(--gold-lt); border-color: var(--gold); }
 
-    .cnt-num {
+    .cnt-sel .cnt-num {
       flex: 1;
       text-align: center;
       font-family: 'ChangwonDangamRound', sans-serif;
       font-size: 25px;
-      color: #ffffff;
+      font-weight: 600;
+      color: var(--text-dk);
     }
 
-    .cnt-unit { font-size: 13px; color: var(--text-lt); }
+    .cnt-sel .cnt-unit {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-dk);
+    }
 
     .rsvp-submit {
       width: 100%;
