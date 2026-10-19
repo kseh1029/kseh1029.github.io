@@ -1,0 +1,15 @@
+[
+  {
+    "id": "exp_1792390585337_1vn7",
+    "day": 1,
+    "date": "11/1 (일)",
+    "title": "11",
+    "amount": 11,
+    "currency": "KRW",
+    "category": "food",
+    "method": "card",
+    "payer": "다솔",
+    "time": "15:16",
+    "updatedAt": 1792390585337
+  }
+]
